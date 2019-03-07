@@ -20,27 +20,7 @@ var Styles = /* module */[/* projects */projects];
 
 var component = ReasonReact.statelessComponent("Projects");
 
-var projects$1 = /* :: */[
-  "Aletheia",
-  /* :: */[
-    "Saber",
-    /* :: */[
-      "Website",
-      /* :: */[
-        "Org Site",
-        /* :: */[
-          "Stuyspec",
-          /* :: */[
-            "Greedux",
-            /* [] */0
-          ]
-        ]
-      ]
-    ]
-  ]
-];
-
-function make(_children) {
+function make(_children, projects$1) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -54,8 +34,9 @@ function make(_children) {
           /* render */(function (_self) {
               return React.createElement("div", {
                           className: projects
-                        }, $$Array.of_list(List.map((function (title) {
-                                    return ReasonReact.element(undefined, undefined, Project$ReactTemplate.make(/* array */[], title));
+                        }, $$Array.of_list(List.map((function (param) {
+                                    var match = param[1];
+                                    return ReasonReact.element(undefined, undefined, Project$ReactTemplate.make(/* array */[], match[/* name */0], param[0], match[/* color */1]));
                                   }), projects$1)));
             }),
           /* initialState */component[/* initialState */10],
@@ -67,6 +48,5 @@ function make(_children) {
 
 exports.Styles = Styles;
 exports.component = component;
-exports.projects = projects$1;
 exports.make = make;
 /* projects Not a pure module */

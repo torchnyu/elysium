@@ -4,41 +4,64 @@
 var Css = require("bs-css/src/Css.js");
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var Link$ReactTemplate = require("./Link.bs.js");
 
-var project = Css.style(/* :: */[
-      Css.display(/* flex */-1010954439),
-      /* :: */[
-        Css.flexDirection(Css.column),
-        /* :: */[
-          Css.alignItems(Css.center),
-          /* :: */[
-            Css.justifyContent(Css.center),
-            /* :: */[
-              Css.minHeight(Css.px(300)),
+function project(projectColor) {
+  return Css.style(/* :: */[
+              Css.display(/* flex */-1010954439),
               /* :: */[
-                Css.minWidth(Css.px(400)),
+                Css.flexDirection(Css.column),
                 /* :: */[
-                  Css.marginBottom(Css.px(200)),
+                  Css.alignItems(Css.center),
                   /* :: */[
-                    Css.boxShadow(Css.px(7), Css.px(7), Css.px(27), Css.px(-2), undefined, Css.rgba(0, 0, 0, 0.75)),
+                    Css.justifyContent(Css.center),
                     /* :: */[
-                      Css.color(Css.hex("232c33")),
-                      /* [] */0
+                      Css.minHeight(Css.px(300)),
+                      /* :: */[
+                        Css.minWidth(Css.px(400)),
+                        /* :: */[
+                          Css.marginBottom(Css.px(200)),
+                          /* :: */[
+                            Css.backgroundColor(Css.hex(projectColor)),
+                            /* :: */[
+                              /* `transition */[
+                                -659583595,
+                                "box-shadow 0.2s"
+                              ],
+                              /* :: */[
+                                Css.hover(/* :: */[
+                                      Css.boxShadow(Css.px(7), Css.px(7), Css.px(27), Css.px(-2), undefined, Css.rgba(0, 0, 0, 0.75)),
+                                      /* [] */0
+                                    ]),
+                                /* :: */[
+                                  Css.color(Css.hex("FFFFFF")),
+                                  /* [] */0
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
                     ]
                   ]
                 ]
               ]
-            ]
-          ]
-        ]
-      ]
+            ]);
+}
+
+var name = Css.style(/* :: */[
+      Css.textDecoration(Css.none),
+      /* [] */0
     ]);
 
-var Styles = /* module */[/* project */project];
+var Styles = /* module */[
+  /* project */project,
+  /* name */name
+];
 
 var component = ReasonReact.statelessComponent("Project");
 
-function make(_children, title) {
+function make(_children, name$1, slug, color) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -50,9 +73,9 @@ function make(_children, title) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement("div", {
-                          className: project
-                        }, React.createElement("h1", undefined, title));
+              return ReasonReact.element(undefined, undefined, Link$ReactTemplate.make(/* array */[React.createElement("h1", {
+                                    className: name
+                                  }, name$1)], "/projects/" + slug, project(color)));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
@@ -64,4 +87,4 @@ function make(_children, title) {
 exports.Styles = Styles;
 exports.component = component;
 exports.make = make;
-/* project Not a pure module */
+/* name Not a pure module */

@@ -4,20 +4,19 @@
 var Css = require("bs-css/src/Css.js");
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
-var Link$ReactTemplate = require("./Link.bs.js");
 
-var header = Css.style(/* :: */[
+var project = Css.style(/* :: */[
       Css.display(/* flex */-1010954439),
       /* :: */[
         Css.flexDirection(Css.column),
         /* :: */[
-          Css.alignItems(Css.flexStart),
+          Css.alignItems(Css.center),
           /* :: */[
-            Css.width(Css.vw(100.0)),
+            Css.justifyContent(Css.center),
             /* :: */[
-              Css.fontFamily("mr-eaves-xl-modern, sans-serif"),
+              Css.minWidth(Css.vw(90.0)),
               /* :: */[
-                Css.paddingLeft(Css.vw(10.0)),
+                Css.color(Css.hex("232c33")),
                 /* [] */0
               ]
             ]
@@ -26,11 +25,11 @@ var header = Css.style(/* :: */[
       ]
     ]);
 
-var Styles = /* module */[/* header */header];
+var Styles = /* module */[/* project */project];
 
-var component = ReasonReact.statelessComponent("App");
+var component = ReasonReact.statelessComponent("ProjectPage");
 
-function make(_children) {
+function make(_children, project$1) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -42,7 +41,9 @@ function make(_children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return ReasonReact.element(undefined, undefined, Link$ReactTemplate.make(/* array */[React.createElement("h1", undefined, "Elysium")], "/", header));
+              return React.createElement("div", {
+                          className: project
+                        }, React.createElement("h1", undefined, project$1[/* name */0]), React.createElement("p", undefined, project$1[/* description */2]));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
@@ -54,4 +55,4 @@ function make(_children) {
 exports.Styles = Styles;
 exports.component = component;
 exports.make = make;
-/* header Not a pure module */
+/* project Not a pure module */

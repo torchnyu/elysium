@@ -18,6 +18,6 @@ let make = _children => {
   ...component,
 
   render: _self => {
-    <div className=Styles.header> <h1> {ReasonReact.string("Elysium")} </h1> </div>;
+    <Link href="/" className=Styles.header> <h1> {ReasonReact.string("Elysium")} </h1> </Link>;
   },
 };

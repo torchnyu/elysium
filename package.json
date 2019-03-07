@@ -4,7 +4,7 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "dev": "concurrently \"bsb -make-world -w\" \"webpack -w\" ",
+    "dev": "concurrently \"bsb -make-world -w\" \"webpack-dev-server -w\" ",
     "clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack -w",

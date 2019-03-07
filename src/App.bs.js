@@ -2,10 +2,15 @@
 'use strict';
 
 var Css = require("bs-css/src/Css.js");
+var List = require("bs-platform/lib/js/list.js");
+var Block = require("bs-platform/lib/js/block.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Header$ReactTemplate = require("./Header.bs.js");
-var Projects$ReactTemplate = require("./Projects.bs.js");
+var ProjectPage$ReactTemplate = require("./ProjectPage.bs.js");
+var ProjectsList$ReactTemplate = require("./ProjectsList.bs.js");
 
 var projectsGrid = Css.style(/* :: */[
       Css.display(Css.grid),
@@ -31,7 +36,69 @@ var Styles = /* module */[
   /* app */app
 ];
 
-var component = ReasonReact.statelessComponent("App");
+var component = ReasonReact.reducerComponent("App");
+
+var projects = /* :: */[
+  /* tuple */[
+    "aletheia",
+    /* record */[
+      /* name */"Aletheia",
+      /* color */"0AD3FF",
+      /* description */"The single source of truth for all HackNYU services"
+    ]
+  ],
+  /* :: */[
+    /* tuple */[
+      "saber",
+      /* record */[
+        /* name */"Saber",
+        /* color */"FF8A5B",
+        /* description */"A lean, row polymorphic gradually typed language for WebAssembly"
+      ]
+    ],
+    /* :: */[
+      /* tuple */[
+        "website",
+        /* record */[
+          /* name */"Website",
+          /* color */"EA526F",
+          /* description */"HackNYU's event website and registration system"
+        ]
+      ],
+      /* :: */[
+        /* tuple */[
+          "org-site",
+          /* record */[
+            /* name */"Org Site",
+            /* color */"C0DF85",
+            /* description */"HackNYU's org site for info and recruiting"
+          ]
+        ],
+        /* :: */[
+          /* tuple */[
+            "stuyspec",
+            /* record */[
+              /* name */"Stuyspec",
+              /* color */"7DDF64",
+              /* description */"Stuyvesant's newspaper that nobody reads"
+            ]
+          ],
+          /* :: */[
+            /* tuple */[
+              "greedux",
+              /* record */[
+                /* name */"Greedux",
+                /* color */"254E70",
+                /* description */"A build system for React using Gulp"
+              ]
+            ],
+            /* [] */0
+          ]
+        ]
+      ]
+    ]
+  ]
+];
 
 function make(_children) {
   return /* record */[
@@ -39,24 +106,65 @@ function make(_children) {
           /* reactClassInternal */component[/* reactClassInternal */1],
           /* handedOffState */component[/* handedOffState */2],
           /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
+          /* didMount */(function (self) {
+              var watcherID = ReasonReact.Router[/* watchUrl */1]((function (url) {
+                      var match = url[/* path */0];
+                      if (match) {
+                        if (match[0] === "projects") {
+                          var match$1 = match[1];
+                          if (match$1 && !match$1[1]) {
+                            return Curry._1(self[/* send */3], /* GoTo */[/* ProjectPage */[match$1[0]]]);
+                          } else {
+                            return Curry._1(self[/* send */3], /* GoTo */[/* NotFoundPage */1]);
+                          }
+                        } else {
+                          return Curry._1(self[/* send */3], /* GoTo */[/* NotFoundPage */1]);
+                        }
+                      } else {
+                        return Curry._1(self[/* send */3], /* GoTo */[/* MainPage */0]);
+                      }
+                    }));
+              self[/* state */1][/* watcherID */1][0] = Caml_option.some(watcherID);
+              return /* () */0;
+            }),
           /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
+          /* willUnmount */(function (self) {
+              var match = self[/* state */1][/* watcherID */1][0];
+              if (match !== undefined) {
+                return ReasonReact.Router[/* unwatchUrl */2](Caml_option.valFromOption(match));
+              } else {
+                return /* () */0;
+              }
+            }),
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (_self) {
+          /* render */(function (self) {
+              var match = self[/* state */1][/* currentPage */0];
               return React.createElement("div", {
                           className: app
-                        }, ReasonReact.element(undefined, undefined, Header$ReactTemplate.make(/* array */[])), ReasonReact.element(undefined, undefined, Projects$ReactTemplate.make(/* array */[])));
+                        }, ReasonReact.element(undefined, undefined, Header$ReactTemplate.make(/* array */[])), typeof match === "number" ? (
+                            match !== 0 ? React.createElement("div", undefined, "Page not found") : ReasonReact.element(undefined, undefined, ProjectsList$ReactTemplate.make(/* array */[], projects))
+                          ) : ReasonReact.element(undefined, undefined, ProjectPage$ReactTemplate.make(/* array */[], List.assoc(match[0], projects))));
             }),
-          /* initialState */component[/* initialState */10],
+          /* initialState */(function (param) {
+              return /* record */[
+                      /* currentPage : MainPage */0,
+                      /* watcherID : record */[/* contents */undefined]
+                    ];
+            }),
           /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
+          /* reducer */(function (action, state) {
+              return /* Update */Block.__(0, [/* record */[
+                          /* currentPage */action[0],
+                          /* watcherID */state[/* watcherID */1]
+                        ]]);
+            }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]
         ];
 }
 
 exports.Styles = Styles;
 exports.component = component;
+exports.projects = projects;
 exports.make = make;
 /* projectsGrid Not a pure module */
