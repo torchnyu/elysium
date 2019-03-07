@@ -7,18 +7,24 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Link$ReactTemplate = require("./Link.bs.js");
 
 var header = Css.style(/* :: */[
-      Css.display(/* flex */-1010954439),
+      Css.position(Css.fixed),
       /* :: */[
-        Css.flexDirection(Css.column),
+        Css.display(/* flex */-1010954439),
         /* :: */[
-          Css.alignItems(Css.flexStart),
+          Css.top(Css.px(0)),
           /* :: */[
-            Css.width(Css.vw(100.0)),
+            Css.flexDirection(Css.column),
             /* :: */[
-              Css.fontFamily("mr-eaves-xl-modern, sans-serif"),
+              Css.alignItems(Css.flexStart),
               /* :: */[
-                Css.paddingLeft(Css.vw(10.0)),
-                /* [] */0
+                Css.width(Css.vw(100.0)),
+                /* :: */[
+                  Css.fontFamily("mr-eaves-xl-modern, sans-serif"),
+                  /* :: */[
+                    Css.paddingLeft(Css.vw(10.0)),
+                    /* [] */0
+                  ]
+                ]
               ]
             ]
           ]

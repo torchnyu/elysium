@@ -2,7 +2,9 @@ module Styles = {
   open Css;
   let header =
     style([
+      position(fixed),
       display(`flex),
+      top(px(0)),
       flexDirection(column),
       alignItems(flexStart),
       width(vw(100.0)),

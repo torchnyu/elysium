@@ -1,1 +1,4 @@
-ReactDOMRe.renderToElementWithClassName(<App />, "app");
+ReactDOMRe.renderToElementWithClassName(
+  <ReasonApollo.Provider client=Client.instance> <App /> </ReasonApollo.Provider>,
+  "app",
+);
