@@ -24,7 +24,7 @@ var app = Css.style(/* :: */[
         /* :: */[
           Css.alignItems(Css.center),
           /* :: */[
-            Css.fontFamily("Helvetica, sans-serif"),
+            Css.fontFamily("mr-eaves-xl-modern, Helvetica, sans-serif"),
             /* [] */0
           ]
         ]

@@ -2,7 +2,12 @@ module Styles = {
   open Css;
   let projectsGrid = style([display(grid)]);
   let app =
-    style([display(`flex), flexDirection(column), alignItems(center), fontFamily("Helvetica, sans-serif")]);
+    style([
+      display(`flex),
+      flexDirection(column),
+      alignItems(center),
+      fontFamily("mr-eaves-xl-modern, Helvetica, sans-serif"),
+    ]);
 };
 
 type routes =
