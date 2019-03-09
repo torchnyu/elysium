@@ -23,7 +23,7 @@ let component = ReasonReact.statelessComponent("Project");
 let make = (_children, ~name, ~slug, ~color) => {
   ...component,
   render: _self => {
-    <Link href={"/projects/" ++ slug} className={Some(Styles.project(color))}>
+    <Link href={"/projects/" ++ slug} className={Styles.project(color)}>
       <h1 className=Styles.name> {ReasonReact.string(name)} </h1>
     </Link>;
   },

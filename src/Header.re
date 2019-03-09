@@ -21,8 +21,8 @@ let make = _children => {
 
   render: _self => {
     <div className=Styles.header>
-      <Link href="/" className=None> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
-      <Link href="/submit" className=None> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>
+      <Link href="/"> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
+      <Link href="/submit"> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>
     </div>;
   },
 };
