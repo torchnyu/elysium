@@ -8,6 +8,7 @@ var React = require("react");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Header$ReactTemplate = require("./Header.bs.js");
+var ProjectForm$ReactTemplate = require("./ProjectForm.bs.js");
 var ProjectPage$ReactTemplate = require("./ProjectPage.bs.js");
 var ProjectsList$ReactTemplate = require("./ProjectsList.bs.js");
 
@@ -40,15 +41,22 @@ var component = ReasonReact.reducerComponent("App");
 function urlToPage(url) {
   var match = url[/* path */0];
   if (match) {
-    if (match[0] === "projects") {
-      var match$1 = match[1];
-      if (match$1 && !match$1[1]) {
-        return /* ProjectPage */[match$1[0]];
-      } else {
+    switch (match[0]) {
+      case "projects" : 
+          var match$1 = match[1];
+          if (match$1 && !match$1[1]) {
+            return /* ProjectPage */[match$1[0]];
+          } else {
+            return /* NotFoundPage */1;
+          }
+      case "submit" : 
+          if (match[1]) {
+            return /* NotFoundPage */1;
+          } else {
+            return /* SubmitProjectPage */2;
+          }
+      default:
         return /* NotFoundPage */1;
-      }
-    } else {
-      return /* NotFoundPage */1;
     }
   } else {
     return /* MainPage */0;
@@ -81,11 +89,26 @@ function make(_children) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               var match = self[/* state */1][/* currentPage */0];
+              var tmp;
+              if (typeof match === "number") {
+                switch (match) {
+                  case 0 : 
+                      tmp = ReasonReact.element(undefined, undefined, ProjectsList$ReactTemplate.make(/* array */[]));
+                      break;
+                  case 1 : 
+                      tmp = React.createElement("div", undefined, "Page not found");
+                      break;
+                  case 2 : 
+                      tmp = ReasonReact.element(undefined, undefined, ProjectForm$ReactTemplate.make(/* array */[]));
+                      break;
+                  
+                }
+              } else {
+                tmp = ReasonReact.element(undefined, undefined, ProjectPage$ReactTemplate.make(/* array */[], match[0]));
+              }
               return React.createElement("div", {
                           className: app
-                        }, ReasonReact.element(undefined, undefined, Header$ReactTemplate.make(/* array */[])), typeof match === "number" ? (
-                            match !== 0 ? React.createElement("div", undefined, "Page not found") : ReasonReact.element(undefined, undefined, ProjectsList$ReactTemplate.make(/* array */[]))
-                          ) : ReasonReact.element(undefined, undefined, ProjectPage$ReactTemplate.make(/* array */[], match[0])));
+                        }, ReasonReact.element(undefined, undefined, Header$ReactTemplate.make(/* array */[])), tmp);
             }),
           /* initialState */(function (param) {
               return /* record */[

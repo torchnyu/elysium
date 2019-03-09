@@ -13,11 +13,11 @@ var header = Css.style(/* :: */[
         /* :: */[
           Css.top(Css.px(0)),
           /* :: */[
-            Css.flexDirection(Css.column),
+            Css.left(Css.px(0)),
             /* :: */[
-              Css.alignItems(Css.flexStart),
+              Css.flexDirection(Css.column),
               /* :: */[
-                Css.width(Css.vw(100.0)),
+                Css.alignItems(Css.flexStart),
                 /* :: */[
                   Css.fontFamily("mr-eaves-xl-modern, sans-serif"),
                   /* :: */[
@@ -48,7 +48,9 @@ function make(_children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return ReasonReact.element(undefined, undefined, Link$ReactTemplate.make(/* array */[React.createElement("h1", undefined, "Elysium")], "/", header));
+              return React.createElement("div", {
+                          className: header
+                        }, ReasonReact.element(undefined, undefined, Link$ReactTemplate.make(/* array */[React.createElement("h1", undefined, "Elysium")], undefined, "/")), ReasonReact.element(undefined, undefined, Link$ReactTemplate.make(/* array */[React.createElement("h2", undefined, "Submit a project")], undefined, "/submit")));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

@@ -13,7 +13,8 @@ module Styles = {
 type routes =
   | MainPage
   | ProjectPage(string)
-  | NotFoundPage;
+  | NotFoundPage
+  | SubmitProjectPage;
 
 type state = {
   currentPage: routes,
@@ -30,6 +31,7 @@ open Types;
 let urlToPage = (url: ReasonReact.Router.url) =>
   switch (url.path) {
   | ["projects", slug] => ProjectPage(slug)
+  | ["submit"] => SubmitProjectPage
   | [] => MainPage
   | _ => NotFoundPage
   };
@@ -58,6 +60,7 @@ let make = _children => {
       {switch (self.state.currentPage) {
        | MainPage => <ProjectsList />
        | ProjectPage(slug) => <ProjectPage slug />
+       | SubmitProjectPage => <ProjectForm />
        | NotFoundPage => <div> {ReasonReact.string("Page not found")} </div>
        }}
     </div>;

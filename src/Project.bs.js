@@ -75,7 +75,7 @@ function make(_children, name$1, slug, color) {
           /* render */(function (_self) {
               return ReasonReact.element(undefined, undefined, Link$ReactTemplate.make(/* array */[React.createElement("h1", {
                                     className: name
-                                  }, name$1)], "/projects/" + slug, project(color)));
+                                  }, name$1)], project(color), "/projects/" + slug));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

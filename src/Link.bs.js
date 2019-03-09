@@ -2,6 +2,7 @@
 'use strict';
 
 var ReactDOMRe = require("reason-react/src/ReactDOMRe.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("Link");
@@ -15,7 +16,7 @@ function handleClick($$location, $$event) {
   }
 }
 
-function make(children, href, className) {
+function make(children, className, href) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -27,13 +28,16 @@ function make(children, href, className) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return ReactDOMRe.createElementVariadic("a", {
-                          className: className,
-                          href: href,
-                          onClick: (function (param) {
-                              return handleClick(href, param);
-                            })
-                        }, children);
+              var tmp = {
+                href: href,
+                onClick: (function (param) {
+                    return handleClick(href, param);
+                  })
+              };
+              if (className !== undefined) {
+                tmp.className = Caml_option.valFromOption(className);
+              }
+              return ReactDOMRe.createElementVariadic("a", Caml_option.some(tmp), children);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

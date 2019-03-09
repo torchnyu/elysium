@@ -5,9 +5,9 @@ module Styles = {
       position(fixed),
       display(`flex),
       top(px(0)),
+      left(px(0)),
       flexDirection(column),
       alignItems(flexStart),
-      width(vw(100.0)),
       fontFamily("mr-eaves-xl-modern, sans-serif"),
       paddingLeft(vw(10.0)),
     ]);
@@ -20,6 +20,9 @@ let make = _children => {
   ...component,
 
   render: _self => {
-    <Link href="/" className=Styles.header> <h1> {ReasonReact.string("Elysium")} </h1> </Link>;
+    <div className=Styles.header>
+      <Link href="/" className=None> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
+      <Link href="/submit" className=None> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>
+    </div>;
   },
 };

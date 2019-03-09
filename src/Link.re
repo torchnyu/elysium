@@ -6,9 +6,9 @@ let handleClick = (location, event) =>
     ReasonReact.Router.push(location);
   };
 
-let make = (children, ~href, ~className) => {
+let make = (children, ~className, ~href) => {
   ...component,
   render: _self => {
-    <a className href onClick={handleClick(href)}> ...children </a>;
+    <a href ?className onClick={handleClick(href)}> ...children </a>;
   },
 };
