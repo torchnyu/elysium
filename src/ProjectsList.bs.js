@@ -11,6 +11,7 @@ var Js_json = require("bs-platform/lib/js/js_json.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var ReasonApollo = require("reason-apollo/src/ReasonApollo.bs.js");
+var Types$ReactTemplate = require("./Types.bs.js");
 var Project$ReactTemplate = require("./Project.bs.js");
 
 var projects = Css.style(/* :: */[
@@ -25,7 +26,7 @@ var Styles = /* module */[/* projects */projects];
 
 var component = ReasonReact.statelessComponent("Projects");
 
-var ppx_printed_query = "query getProjects  {\nprojects  {\nid  \nname  \n}\n\n}\n";
+var ppx_printed_query = "query getProjects  {\nprojects  {\nid  \nname  \ncolor  \nslug  \ndescription  \n}\n\n}\n";
 
 function parse(value) {
   var match = Js_json.decodeObject(value);
@@ -57,9 +58,44 @@ function parse(value) {
                   } else {
                     tmp$1 = Js_exn.raiseError("graphql_ppx: Field name on type Project is missing");
                   }
+                  var match$5 = Js_dict.get(value$1, "color");
+                  var tmp$2;
+                  if (match$5 !== undefined) {
+                    var value$4 = Caml_option.valFromOption(match$5);
+                    var match$6 = Js_json.decodeString(value$4);
+                    tmp$2 = match$6 !== undefined ? match$6 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$4));
+                  } else {
+                    tmp$2 = Js_exn.raiseError("graphql_ppx: Field color on type Project is missing");
+                  }
+                  var match$7 = Js_dict.get(value$1, "slug");
+                  var tmp$3;
+                  if (match$7 !== undefined) {
+                    var value$5 = Caml_option.valFromOption(match$7);
+                    var match$8 = Js_json.decodeString(value$5);
+                    tmp$3 = match$8 !== undefined ? match$8 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$5));
+                  } else {
+                    tmp$3 = Js_exn.raiseError("graphql_ppx: Field slug on type Project is missing");
+                  }
+                  var match$9 = Js_dict.get(value$1, "description");
+                  var tmp$4;
+                  if (match$9 !== undefined) {
+                    var value$6 = Caml_option.valFromOption(match$9);
+                    var match$10 = Js_json.decodeNull(value$6);
+                    if (match$10 !== undefined) {
+                      tmp$4 = undefined;
+                    } else {
+                      var match$11 = Js_json.decodeString(value$6);
+                      tmp$4 = match$11 !== undefined ? match$11 : Js_exn.raiseError("graphql_ppx: Expected string, got " + JSON.stringify(value$6));
+                    }
+                  } else {
+                    tmp$4 = undefined;
+                  }
                   return {
                           id: tmp,
-                          name: tmp$1
+                          name: tmp$1,
+                          color: tmp$2,
+                          slug: tmp$3,
+                          description: tmp$4
                         };
                 } else {
                   return Js_exn.raiseError("graphql_ppx: Object is not a value");
@@ -113,21 +149,7 @@ var GetProjectsQuery = ReasonApollo.CreateQuery([
       parse
     ]);
 
-function projectToJs(param) {
-  return {
-          id: param[/* id */0],
-          name: param[/* name */1]
-        };
-}
-
-function projectFromJs(param) {
-  return /* record */[
-          /* id */param.id,
-          /* name */param.name
-        ];
-}
-
-function make$1(_children, projects$1) {
+function make$1(_children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -161,8 +183,8 @@ function make$1(_children, projects$1) {
                                     return React.createElement("div", undefined, React.createElement("div", {
                                                     className: projects
                                                   }, $$Array.map((function (project) {
-                                                          var projectRecord = projectFromJs(project);
-                                                          return ReasonReact.element(String(projectRecord[/* id */0]), undefined, Project$ReactTemplate.make(/* array */[], projectRecord[/* name */1], "aletheia", "EA526F"));
+                                                          var projectRecord = Types$ReactTemplate.projectFromJs(project);
+                                                          return ReasonReact.element(String(projectRecord[/* id */0]), undefined, Project$ReactTemplate.make(/* array */[], projectRecord[/* name */1], projectRecord[/* slug */3], projectRecord[/* color */2]));
                                                         }), result[0].projects)));
                                   } else {
                                     return React.createElement("div", undefined, result[0].message);
@@ -181,7 +203,5 @@ exports.Styles = Styles;
 exports.component = component;
 exports.GetProjects = GetProjects;
 exports.GetProjectsQuery = GetProjectsQuery;
-exports.projectToJs = projectToJs;
-exports.projectFromJs = projectFromJs;
 exports.make = make$1;
 /* projects Not a pure module */

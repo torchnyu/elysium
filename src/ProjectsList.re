@@ -3,26 +3,27 @@ module Styles = {
   let projects = style([display(`flex), flexDirection(column)]);
 };
 
+open Types;
+
 let component = ReasonReact.statelessComponent("Projects");
 
-module GetProjects = [%graphql {|
+module GetProjects = [%graphql
+  {|
  query getProjects {
     projects {
       id
       name
+      color
+      slug
+      description
     }
  }
-|}];
+|}
+];
 
 module GetProjectsQuery = ReasonApollo.CreateQuery(GetProjects);
 
-[@bs.deriving jsConverter]
-type project = {
-  id: int,
-  name: string,
-};
-
-let make = (_children, ~projects) => {
+let make = _children => {
   ...component,
   render: _self => {
     <GetProjectsQuery>
@@ -39,9 +40,9 @@ let make = (_children, ~projects) => {
                       let projectRecord = projectFromJs(project);
                       <Project
                         key={string_of_int(projectRecord.id)}
-                        slug="aletheia"
+                        slug={projectRecord.slug}
                         name={projectRecord.name}
-                        color="EA526F"
+                        color={projectRecord.color}
                       />;
                     },
                     response##projects,

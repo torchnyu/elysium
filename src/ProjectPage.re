@@ -14,12 +14,44 @@ let component = ReasonReact.statelessComponent("ProjectPage");
 
 open Types;
 
-let make = (_children, ~project: project) => {
+module GetProjectBySlug = [%graphql
+  {|
+ query getProjectBySlug($slug: String!) {
+    projectBySlug(slug: $slug) {
+      id
+      name
+      slug
+      color
+      description
+    }
+ }
+|}
+];
+
+module GetProjectBySlugQuery = ReasonApollo.CreateQuery(GetProjectBySlug);
+
+let make = (_children, ~slug) => {
   ...component,
   render: _self => {
-    <div className=Styles.project>
-      <h1> {ReasonReact.string(project.name)} </h1>
-      <p> {ReasonReact.string(project.description)} </p>
-    </div>;
+    let slugQuery = GetProjectBySlug.make(~slug, ());
+    <GetProjectBySlugQuery variables=slugQuery##variables>
+      ...{({result}) =>
+        switch (result) {
+        | Loading => <div> {ReasonReact.string("Loading")} </div>
+        | Error(error) => <div> {ReasonReact.string(error##message)} </div>
+        | Data(response) =>
+          let project = projectFromJs(response##projectBySlug);
+          <div className=Styles.project>
+            <h1> {ReasonReact.string(project.name)} </h1>
+            <p>
+              {switch (project.description) {
+               | None => ReasonReact.string("No description")
+               | Some(desc) => ReasonReact.string(desc)
+               }}
+            </p>
+          </div>;
+        }
+      }
+    </GetProjectBySlugQuery>;
   },
 };

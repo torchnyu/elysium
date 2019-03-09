@@ -17,6 +17,7 @@ module Styles = {
 
   let name = style([textDecoration(none)]);
 };
+
 let component = ReasonReact.statelessComponent("Project");
 
 let make = (_children, ~name, ~slug, ~color) => {
