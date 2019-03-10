@@ -18,6 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "bs-css": "^8.0.2",
+    "bs-reform": "^6.0.0-gadt.5",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "reason-apollo": "^0.15.2",

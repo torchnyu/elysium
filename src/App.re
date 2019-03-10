@@ -10,28 +10,31 @@ module Styles = {
     ]);
 };
 
+open Types;
 type routes =
   | MainPage
   | ProjectPage(string)
   | NotFoundPage
-  | SubmitProjectPage;
+  | SubmitProjectPage
+  | LoginPage;
 
 type state = {
   currentPage: routes,
+  currentSession: option(session),
   watcherID: ref(option(ReasonReact.Router.watcherID)),
 };
 
 type action =
-  | GoTo(routes);
+  | GoTo(routes)
+  | CreateSession(session);
 
 let component = ReasonReact.reducerComponent("App");
-
-open Types;
 
 let urlToPage = (url: ReasonReact.Router.url) =>
   switch (url.path) {
   | ["projects", slug] => ProjectPage(slug)
   | ["submit"] => SubmitProjectPage
+  | ["login"] => LoginPage
   | [] => MainPage
   | _ => NotFoundPage
   };
@@ -39,7 +42,11 @@ let urlToPage = (url: ReasonReact.Router.url) =>
 let make = _children => {
   /* spread the other default fields of component here and override a few */
   ...component,
-  initialState: () => {currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()), watcherID: ref(None)},
+  initialState: () => {
+    currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
+    watcherID: ref(None),
+    currentUser: None,
+  },
   reducer: (action, state) =>
     switch (action) {
     | GoTo(page) => ReasonReact.Update({...state, currentPage: page})
@@ -55,12 +62,14 @@ let make = _children => {
     | None => ()
     },
   render: self => {
+    let createSession = session => self.send(CreateSession(session));
     <div className=Styles.app>
       <Header />
       {switch (self.state.currentPage) {
        | MainPage => <ProjectsList />
        | ProjectPage(slug) => <ProjectPage slug />
-       | SubmitProjectPage => <ProjectForm />
+       | SubmitProjectPage => <SubmitProjectPage />
+       | LoginPage => <LoginPage createSession />
        | NotFoundPage => <div> {ReasonReact.string("Page not found")} </div>
        }}
     </div>;

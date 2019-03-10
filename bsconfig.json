@@ -20,7 +20,8 @@
   "bs-dependencies": [
     "reason-react",
     "bs-css",
-    "reason-apollo"
+    "reason-apollo",
+    "bs-reform"
   ],
   "ppx-flags": [
     "graphql_ppx/ppx"
