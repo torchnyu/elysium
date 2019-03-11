@@ -11,6 +11,8 @@ module Styles = {
 };
 
 open Types;
+open Belt;
+
 type routes =
   | MainPage
   | ProjectPage(string)
@@ -39,13 +41,25 @@ let urlToPage = (url: ReasonReact.Router.url) =>
   | _ => NotFoundPage
   };
 
+[@bs.val] external unsafeJsonParse: string => 'a = "JSON.parse";
+
+let createSession = (self, session) => {
+  self.ReasonReact.send(CreateSession(session));
+  switch (Js.Json.stringifyAny(session)) {
+  | Some(stringifiedSession) => Dom.Storage.(localStorage |> setItem("session", stringifiedSession))
+  | None => ()
+  };
+};
+
+let rehydrateSession = () => Option.map(Dom.Storage.(localStorage |> getItem("session")), unsafeJsonParse);
+
 let make = _children => {
   /* spread the other default fields of component here and override a few */
   ...component,
   initialState: () => {
     currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
     watcherID: ref(None),
-    currentSession: None,
+    currentSession: rehydrateSession(),
   },
   reducer: (action, state) =>
     switch (action) {
@@ -63,14 +77,13 @@ let make = _children => {
     | None => ()
     },
   render: self => {
-    let createSession = session => self.send(CreateSession(session));
     <div className=Styles.app>
       <Header currentSession={self.state.currentSession} />
       {switch (self.state.currentPage) {
        | MainPage => <ProjectsList />
        | ProjectPage(slug) => <ProjectPage slug />
        | SubmitProjectPage => <SubmitProjectPage />
-       | LoginPage => <LoginPage createSession />
+       | LoginPage => <LoginPage createSession={createSession(self)} />
        | NotFoundPage => <div> {ReasonReact.string("Page not found")} </div>
        }}
     </div>;
