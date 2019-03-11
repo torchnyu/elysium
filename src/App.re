@@ -51,10 +51,12 @@ let createSession = (self, session) => {
   };
 };
 
+/* Functors are cool. Option.map takes in an optional value, a and a function f, a -> b
+   then returns either Some(f(a)) if a is a value or None if a is None
+   */
 let rehydrateSession = () => Option.map(Dom.Storage.(localStorage |> getItem("session")), unsafeJsonParse);
 
 let make = _children => {
-  /* spread the other default fields of component here and override a few */
   ...component,
   initialState: () => {
     currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
