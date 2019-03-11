@@ -1,4 +1,10 @@
-let component = ReasonReact.statelessComponent("ProjectForm");
+type state = {isSubmitting: bool};
+
+type actions =
+  | SubmitForm
+  | SubmitFinished;
+
+let component = ReasonReact.reducerComponent("ProjectForm");
 
 module Login = [%graphql
   {| mutation login($email: String!, $password: String!) {
@@ -34,7 +40,13 @@ exception GraphQLErrors(array(graphqlError));
 exception EmptyResponse;
 let make = (~createSession, _children) => {
   ...component,
-  render: _self => {
+  initialState: () => {isSubmitting: false},
+  reducer: (action, _state) =>
+    switch (action) {
+    | SubmitForm => ReasonReact.Update({isSubmitting: true})
+    | SubmitFinished => ReasonReact.Update({isSubmitting: false})
+    },
+  render: self => {
     <div>
       <h1> {ReasonReact.string("Login")} </h1>
       <LoginMutation>
@@ -43,7 +55,8 @@ let make = (~createSession, _children) => {
             onSubmit={({values}) => {
               let loginQuery = Login.make(~email=values.email, ~password=values.password, ());
               mutation(~variables=loginQuery##variables, ())
-              |> Js.Promise.then_(res =>
+              |> Js.Promise.then_(res => {
+                   self.send(SubmitFinished);
                    switch (res) {
                    | Data(data) =>
                      let user = userFromJs(data##login##user);
@@ -54,8 +67,8 @@ let make = (~createSession, _children) => {
                      Js.log(errs);
                      Js.Promise.reject(raise(GraphQLErrors(errs)));
                    | EmptyResponse => Js.Promise.reject(raise(EmptyResponse))
-                   }
-                 )
+                   };
+                 })
               |> ignore;
               ();
             }}
@@ -80,7 +93,7 @@ let make = (~createSession, _children) => {
                   />
                 </label>
                 <p> {getErrorForField(`password) |> Belt.Option.getWithDefault(_, "") |> ReasonReact.string} </p>
-                <button type_="submit"> {"Submit" |> ReasonReact.string} </button>
+                <button disabled={self.state.isSubmitting} type_="submit"> {"Submit" |> ReasonReact.string} </button>
               </form>
             }
           </LoginForm>
