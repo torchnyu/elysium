@@ -45,11 +45,12 @@ let make = _children => {
   initialState: () => {
     currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
     watcherID: ref(None),
-    currentUser: None,
+    currentSession: None,
   },
   reducer: (action, state) =>
     switch (action) {
     | GoTo(page) => ReasonReact.Update({...state, currentPage: page})
+    | CreateSession(session) => ReasonReact.Update({...state, currentSession: Some(session)})
     },
   didMount: self => {
     let watcherID = ReasonReact.Router.watchUrl(url => self.send(GoTo(urlToPage(url))));
@@ -64,7 +65,7 @@ let make = _children => {
   render: self => {
     let createSession = session => self.send(CreateSession(session));
     <div className=Styles.app>
-      <Header />
+      <Header currentSession={self.state.currentSession} />
       {switch (self.state.currentPage) {
        | MainPage => <ProjectsList />
        | ProjectPage(slug) => <ProjectPage slug />

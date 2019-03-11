@@ -29,25 +29,33 @@ module LoginParams = {
 
 module LoginForm = ReForm.Create(LoginParams);
 open Types;
+open ReasonApolloTypes;
+exception GraphQLErrors(array(graphqlError));
+exception EmptyResponse;
 let make = (~createSession, _children) => {
   ...component,
   render: _self => {
     <div>
-      <h1> {ReasonReact.string("New Project")} </h1>
+      <h1> {ReasonReact.string("Login")} </h1>
       <LoginMutation>
         ...{(mutation, _) =>
           <LoginForm
             onSubmit={({values}) => {
               let loginQuery = Login.make(~email=values.email, ~password=values.password, ());
               mutation(~variables=loginQuery##variables, ())
-              |> Js.Promise.then_(res => {
-                   let session = sessionFromJs(res##login);
-                   createSession(session);
-                 })
-              |> Js.Promise.catch(err => {
-                   Js.log(err);
-                   Js.Promise.resolve(err);
-                 })
+              |> Js.Promise.then_(res =>
+                   switch (res) {
+                   | Data(data) =>
+                     let user = userFromJs(data##login##user);
+                     let session = {token: data##login##token, user};
+                     createSession(session);
+                     Js.Promise.resolve();
+                   | Errors(errs) =>
+                     Js.log(errs);
+                     Js.Promise.reject(raise(GraphQLErrors(errs)));
+                   | EmptyResponse => Js.Promise.reject(raise(EmptyResponse))
+                   }
+                 )
               |> ignore;
               ();
             }}
