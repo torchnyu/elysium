@@ -23,6 +23,10 @@ module GetProjectBySlug = [%graphql
       slug
       color
       description
+      contributors {
+        id
+        displayName
+      }
     }
  }
 |}
@@ -41,6 +45,7 @@ let make = (_children, ~slug) => {
         | Error(error) => <div> {ReasonReact.string(error##message)} </div>
         | Data(response) =>
           let project = projectFromJs(response##projectBySlug);
+          let contributors = response##projectBySlug##contributors |> Array.map(user => userFromJs(user));
           <div className=Styles.project>
             <h1> {ReasonReact.string(project.name)} </h1>
             <p>
@@ -49,6 +54,13 @@ let make = (_children, ~slug) => {
                | Some(desc) => ReasonReact.string(desc)
                }}
             </p>
+            <h2> {ReasonReact.string("Contributors")} </h2>
+            <div>
+              ...{
+                   contributors
+                   |> Array.map(c => <div key={string_of_int(c.id)}> {ReasonReact.string(c.displayName)} </div>)
+                 }
+            </div>
           </div>;
         }
       }

@@ -2,9 +2,11 @@ type state = {isSubmitting: bool};
 
 type actions =
   | SubmitForm
-  | SubmitFinished;
+  | FinishSubmit;
 
 let component = ReasonReact.reducerComponent("ProjectForm");
+
+open Types;
 
 module Login = [%graphql
   {| mutation login($email: String!, $password: String!) {
@@ -33,18 +35,18 @@ module LoginParams = {
   ];
 };
 
-module LoginForm = ReForm.Create(LoginParams);
-open Types;
 open ReasonApolloTypes;
+module LoginForm = ReForm.Create(LoginParams);
 exception GraphQLErrors(array(graphqlError));
 exception EmptyResponse;
+
 let make = (~createSession, _children) => {
   ...component,
   initialState: () => {isSubmitting: false},
   reducer: (action, _state) =>
     switch (action) {
     | SubmitForm => ReasonReact.Update({isSubmitting: true})
-    | SubmitFinished => ReasonReact.Update({isSubmitting: false})
+    | FinishSubmit => ReasonReact.Update({isSubmitting: false})
     },
   render: self => {
     <div>
@@ -56,7 +58,7 @@ let make = (~createSession, _children) => {
               let loginQuery = Login.make(~email=values.email, ~password=values.password, ());
               mutation(~variables=loginQuery##variables, ())
               |> Js.Promise.then_(res => {
-                   self.send(SubmitFinished);
+                   self.ReasonReact.send(FinishSubmit);
                    switch (res) {
                    | Data(data) =>
                      let user = userFromJs(data##login##user);

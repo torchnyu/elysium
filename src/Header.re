@@ -15,7 +15,7 @@ module Styles = {
 
 let component = ReasonReact.statelessComponent("App");
 open Types;
-let make = (~currentSession, _children) => {
+let make = (~currentSession, ~deleteSession, _children) => {
   /* spread the other default fields of component here and override a few */
   ...component,
 
@@ -24,7 +24,11 @@ let make = (~currentSession, _children) => {
       <Link href="/"> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
       <Link href="/submit"> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>
       {switch (currentSession) {
-       | Some(session) => <h2> {ReasonReact.string("Welcome " ++ session.user.displayName)} </h2>
+       | Some(session) =>
+         <div>
+           <h2> <a href="#" onClick={_ => deleteSession()}> {ReasonReact.string("Sign out")} </a> </h2>
+           <h2> {ReasonReact.string("Welcome " ++ session.user.displayName)} </h2>
+         </div>
        | None => <Link href="/login"> <h2> {ReasonReact.string("Login")} </h2> </Link>
        }}
     </div>;

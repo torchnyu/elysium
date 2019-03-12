@@ -28,15 +28,28 @@ type state = {
 
 type action =
   | GoTo(routes)
-  | CreateSession(session);
+  | CreateSession(session)
+  | DeleteSession;
 
 let component = ReasonReact.reducerComponent("App");
 
-let urlToPage = (url: ReasonReact.Router.url) =>
+let urlToPage = (url: ReasonReact.Router.url, session: option(session)) =>
   switch (url.path) {
   | ["projects", slug] => ProjectPage(slug)
-  | ["submit"] => SubmitProjectPage
-  | ["login"] => LoginPage
+  | ["submit"] =>
+    switch (session) {
+    | None =>
+      ReasonReact.Router.push("/login");
+      LoginPage;
+    | Some(_) => SubmitProjectPage
+    }
+  | ["login"] =>
+    switch (session) {
+    | None => LoginPage
+    | Some(_) =>
+      ReasonReact.Router.push("/");
+      MainPage;
+    }
   | [] => MainPage
   | _ => NotFoundPage
   };
@@ -51,6 +64,11 @@ let createSession = (self, session) => {
   };
 };
 
+let deleteSession = (self, ()) => {
+  self.ReasonReact.send(DeleteSession);
+  Dom.Storage.(localStorage |> removeItem("session"));
+};
+
 /* Functors are cool. Option.map takes in an optional value, a and a function f, a -> b
    then returns either Some(f(a)) if a is a value or None if a is None
    */
@@ -59,17 +77,21 @@ let rehydrateSession = () => Option.map(Dom.Storage.(localStorage |> getItem("se
 let make = _children => {
   ...component,
   initialState: () => {
-    currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
-    watcherID: ref(None),
-    currentSession: rehydrateSession(),
+    let currentSession = rehydrateSession();
+    {
+      currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl(), currentSession),
+      watcherID: ref(None),
+      currentSession,
+    };
   },
   reducer: (action, state) =>
     switch (action) {
     | GoTo(page) => ReasonReact.Update({...state, currentPage: page})
     | CreateSession(session) => ReasonReact.Update({...state, currentSession: Some(session)})
+    | DeleteSession => ReasonReact.Update({...state, currentSession: None})
     },
   didMount: self => {
-    let watcherID = ReasonReact.Router.watchUrl(url => self.send(GoTo(urlToPage(url))));
+    let watcherID = ReasonReact.Router.watchUrl(url => self.send(GoTo(urlToPage(url, self.state.currentSession))));
     self.state.watcherID := Some(watcherID);
     ();
   },
@@ -80,11 +102,12 @@ let make = _children => {
     },
   render: self => {
     <div className=Styles.app>
-      <Header currentSession={self.state.currentSession} />
+      <Header deleteSession={deleteSession(self)} currentSession={self.state.currentSession} />
       {switch (self.state.currentPage) {
        | MainPage => <ProjectsList />
        | ProjectPage(slug) => <ProjectPage slug />
-       | SubmitProjectPage => <SubmitProjectPage />
+       | SubmitProjectPage =>
+         <SubmitProjectPage createSession={createSession(self)} session={self.state.currentSession} />
        | LoginPage => <LoginPage createSession={createSession(self)} />
        | NotFoundPage => <div> {ReasonReact.string("Page not found")} </div>
        }}
