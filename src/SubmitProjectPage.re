@@ -57,7 +57,7 @@ exception EmptyResponse;
 let make = (~session, ~createSession, _children) => {
   ...component,
   initialState: () => {isSubmitting: false},
-  reducer: (action, state) =>
+  reducer: (action, _state) =>
     switch (action) {
     | SubmitForm => ReasonReact.Update({isSubmitting: true})
     | FinishSubmit => ReasonReact.Update({isSubmitting: false})
@@ -78,7 +78,7 @@ let make = (~session, ~createSession, _children) => {
                     ~description=values.description,
                     ~repositoryUrl=values.repositoryUrl,
                     ~token=session.token,
-                    ~color="#ff0000",
+                    ~color="DD1155",
                     (),
                   );
                 mutation(~variables=projectQuery##variables, ())
@@ -89,7 +89,7 @@ let make = (~session, ~createSession, _children) => {
                        let session = {...session, token: data##createProject##token};
                        let projectSlug = data##createProject##project##slug;
                        createSession(session);
-                       ReasonReact.Router.push("/" ++ projectSlug);
+                       ReasonReact.Router.push("/projects/" ++ projectSlug);
                        Js.Promise.resolve();
                      | Errors(errs) =>
                        Js.log(errs);

@@ -22,14 +22,14 @@ let make = (~currentSession, ~deleteSession, _children) => {
   render: _self => {
     <div className=Styles.header>
       <Link href="/"> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
-      <Link href="/submit"> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>
       {switch (currentSession) {
        | Some(session) =>
          <div>
            <h2> <a href="#" onClick={_ => deleteSession()}> {ReasonReact.string("Sign out")} </a> </h2>
+           <Link href="/submit"> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>
            <h2> {ReasonReact.string("Welcome " ++ session.user.displayName)} </h2>
          </div>
-       | None => <Link href="/login"> <h2> {ReasonReact.string("Login")} </h2> </Link>
+       | None => <div> <Link href="/login"> <h2> {ReasonReact.string("Login")} </h2> </Link> </div>
        }}
     </div>;
   },

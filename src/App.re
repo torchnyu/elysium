@@ -36,20 +36,8 @@ let component = ReasonReact.reducerComponent("App");
 let urlToPage = (url: ReasonReact.Router.url, session: option(session)) =>
   switch (url.path) {
   | ["projects", slug] => ProjectPage(slug)
-  | ["submit"] =>
-    switch (session) {
-    | None =>
-      ReasonReact.Router.push("/login");
-      LoginPage;
-    | Some(_) => SubmitProjectPage
-    }
-  | ["login"] =>
-    switch (session) {
-    | None => LoginPage
-    | Some(_) =>
-      ReasonReact.Router.push("/");
-      MainPage;
-    }
+  | ["submit"] => SubmitProjectPage
+  | ["login"] => LoginPage
   | [] => MainPage
   | _ => NotFoundPage
   };
@@ -103,13 +91,19 @@ let make = _children => {
   render: self => {
     <div className=Styles.app>
       <Header deleteSession={deleteSession(self)} currentSession={self.state.currentSession} />
-      {switch (self.state.currentPage) {
-       | MainPage => <ProjectsList />
-       | ProjectPage(slug) => <ProjectPage slug />
-       | SubmitProjectPage =>
-         <SubmitProjectPage createSession={createSession(self)} session={self.state.currentSession} />
-       | LoginPage => <LoginPage createSession={createSession(self)} />
-       | NotFoundPage => <div> {ReasonReact.string("Page not found")} </div>
+      {switch (self.state.currentPage, self.state.currentSession) {
+       | (MainPage, _) => <ProjectsList />
+       | (ProjectPage(slug), _) => <ProjectPage slug />
+       | (SubmitProjectPage, Some(session)) =>
+         <SubmitProjectPage createSession={createSession(self)} session={Some(session)} />
+       | (SubmitProjectPage, None) =>
+         ReasonReact.Router.push("/login");
+         <LoginPage createSession={createSession(self)} />;
+       | (LoginPage, None) => <LoginPage createSession={createSession(self)} />
+       | (LoginPage, Some(session)) =>
+         ReasonReact.Router.push("/");
+         <ProjectsList />;
+       | (NotFoundPage, _) => <div> {ReasonReact.string("Page not found")} </div>
        }}
     </div>;
   },
