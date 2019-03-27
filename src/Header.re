@@ -6,15 +6,17 @@ module Styles = {
       display(`flex),
       top(px(0)),
       left(px(0)),
-      flexDirection(column),
+      flexDirection(row),
       alignItems(flexStart),
       fontFamily("mr-eaves-xl-modern, sans-serif"),
       paddingLeft(vw(10.0)),
     ]);
+
+  let links = style([display(`flex), justifyContent(flexEnd), width(vw(80.0))]);
+  let link = style([padding(px(20))]);
 };
 
 let component = ReasonReact.statelessComponent("App");
-open Types;
 let make = (~currentSession, ~deleteSession, _children) => {
   /* spread the other default fields of component here and override a few */
   ...component,
@@ -22,15 +24,23 @@ let make = (~currentSession, ~deleteSession, _children) => {
   render: _self => {
     <div className=Styles.header>
       <Link href="/"> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
-      {switch (currentSession) {
-       | Some(session) =>
-         <div>
-           <h2> <a href="#" onClick={_ => deleteSession()}> {ReasonReact.string("Sign out")} </a> </h2>
-           <Link href="/submit"> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>
-           <h2> {ReasonReact.string("Welcome " ++ session.user.displayName)} </h2>
-         </div>
-       | None => <div> <Link href="/login"> <h2> {ReasonReact.string("Login")} </h2> </Link> </div>
-       }}
+      <div className=Styles.links>
+        ...{
+             switch (currentSession) {
+             | Some(_session) => [|
+                 <a href="#" onClick={_ => deleteSession()}> <h2> {ReasonReact.string("Sign out")} </h2> </a>,
+                 <Link href="/submit"> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>,
+               |]
+             | None => [|
+                 <Link className=Styles.link href="/organizers">
+                   <h2> {ReasonReact.string("Organizers")} </h2>
+                 </Link>,
+                 <Link className=Styles.link href="/login"> <h2> {ReasonReact.string("Login")} </h2> </Link>,
+                 <Link className=Styles.link href="/signup"> <h2> {ReasonReact.string("Sign Up")} </h2> </Link>,
+               |]
+             }
+           }
+      </div>
     </div>;
   },
 };

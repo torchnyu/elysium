@@ -33,7 +33,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("App");
 
-let urlToPage = (url: ReasonReact.Router.url, session: option(session)) =>
+let urlToPage = (url: ReasonReact.Router.url) =>
   switch (url.path) {
   | ["projects", slug] => ProjectPage(slug)
   | ["submit"] => SubmitProjectPage
@@ -65,12 +65,9 @@ let rehydrateSession = () => Option.map(Dom.Storage.(localStorage |> getItem("se
 let make = _children => {
   ...component,
   initialState: () => {
-    let currentSession = rehydrateSession();
-    {
-      currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl(), currentSession),
-      watcherID: ref(None),
-      currentSession,
-    };
+    currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
+    watcherID: ref(None),
+    currentSession: rehydrateSession(),
   },
   reducer: (action, state) =>
     switch (action) {
@@ -79,7 +76,7 @@ let make = _children => {
     | DeleteSession => ReasonReact.Update({...state, currentSession: None})
     },
   didMount: self => {
-    let watcherID = ReasonReact.Router.watchUrl(url => self.send(GoTo(urlToPage(url, self.state.currentSession))));
+    let watcherID = ReasonReact.Router.watchUrl(url => self.send(GoTo(urlToPage(url))));
     self.state.watcherID := Some(watcherID);
     ();
   },
@@ -100,7 +97,7 @@ let make = _children => {
          ReasonReact.Router.push("/login");
          <LoginPage createSession={createSession(self)} />;
        | (LoginPage, None) => <LoginPage createSession={createSession(self)} />
-       | (LoginPage, Some(session)) =>
+       | (LoginPage, Some(_session)) =>
          ReasonReact.Router.push("/");
          <ProjectsList />;
        | (NotFoundPage, _) => <div> {ReasonReact.string("Page not found")} </div>
