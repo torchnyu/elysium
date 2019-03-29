@@ -1,6 +1,6 @@
 module Styles = {
   open Css;
-  let project =
+  let event =
     style([
       display(`flex),
       flexDirection(column),
@@ -14,58 +14,62 @@ let component = ReasonReact.statelessComponent("ProjectPage");
 
 open Types;
 
-module GetProjectBySlug = [%graphql
+module GetEventBySlug = [%graphql
   {|
- query getProjectBySlug($slug: String!) {
-    projectBySlug(slug: $slug) {
+ query getEventBySlug($slug: String!) {
+    eventBySlug(slug: $slug) {
       id
       name
+      startTime
+      endTime
       slug
-      color
       description
-      contributors {
+      projects {
         id
-        displayName
+        name
+        color
+        slug
+        description
       }
     }
  }
 |}
 ];
 
-module GetProjectBySlugQuery = ReasonApollo.CreateQuery(GetProjectBySlug);
+module GetEventBySlugQuery = ReasonApollo.CreateQuery(GetEventBySlug);
 
 let make = (_children, ~slug) => {
   ...component,
   render: _self => {
-    let slugQuery = GetProjectBySlug.make(~slug, ());
-    <GetProjectBySlugQuery variables=slugQuery##variables>
+    let slugQuery = GetEventBySlug.make(~slug, ());
+    <GetEventBySlugQuery variables=slugQuery##variables>
       ...{({result}) =>
         switch (result) {
         | Loading => <div> {ReasonReact.string("Loading")} </div>
         | Error(error) => <div> {ReasonReact.string(error##message)} </div>
         | Data(response) =>
-          let project = projectFromJs(response##projectBySlug);
-          let contributors = response##projectBySlug##contributors |> Array.map(user => userFromJs(user));
-          <div className=Styles.project>
-            <h1> {ReasonReact.string(project.name)} </h1>
+          let event = response##eventBySlug;
+          let projects = response##eventBySlug##projects |> Array.map(project => projectFromJs(project));
+          <div className=Styles.event>
+            <h1> {ReasonReact.string(event##name)} </h1>
             <p>
-              {switch (project.description) {
+              {switch (event##description) {
                | None => ReasonReact.string("No description")
                | Some(desc) => ReasonReact.string(desc)
                }}
             </p>
-            <h2> {ReasonReact.string("Contributors")} </h2>
+            <h2> {ReasonReact.string("Projects")} </h2>
             <div>
               ...{
-                   contributors
-                   |> Array.map((c: user) =>
-                        <div key={string_of_int(c.id)}> {ReasonReact.string(c.displayName)} </div>
+                   projects
+                   |> Array.map(({id, name, color, slug}: project) =>
+                        <Project key={string_of_int(id)} name slug color />
                       )
                  }
             </div>
           </div>;
         }
       }
-    </GetProjectBySlugQuery>;
+    </GetEventBySlugQuery>;
   },
 };

@@ -6,7 +6,7 @@ module Styles = {
       display(`flex),
       flexDirection(column),
       alignItems(center),
-      fontFamily("mr-eaves-xl-modern, Helvetica, sans-serif"),
+      fontFamily("Source Sans Pro, Helvetica, sans-serif"),
     ]);
 };
 
@@ -18,6 +18,7 @@ type routes =
   | ProjectPage(string)
   | NotFoundPage
   | SubmitProjectPage
+  | EventPage(string)
   | LoginPage;
 
 type state = {
@@ -38,6 +39,7 @@ let urlToPage = (url: ReasonReact.Router.url) =>
   | ["projects", slug] => ProjectPage(slug)
   | ["submit"] => SubmitProjectPage
   | ["login"] => LoginPage
+  | [eventSlug] => EventPage(eventSlug)
   | [] => MainPage
   | _ => NotFoundPage
   };
@@ -89,7 +91,7 @@ let make = _children => {
     <div className=Styles.app>
       <Header deleteSession={deleteSession(self)} currentSession={self.state.currentSession} />
       {switch (self.state.currentPage, self.state.currentSession) {
-       | (MainPage, _) => <ProjectsList />
+       | (MainPage, _) => <HomePage />
        | (ProjectPage(slug), _) => <ProjectPage slug />
        | (SubmitProjectPage, Some(session)) =>
          <SubmitProjectPage createSession={createSession(self)} session={Some(session)} />
@@ -100,6 +102,7 @@ let make = _children => {
        | (LoginPage, Some(_session)) =>
          ReasonReact.Router.push("/");
          <ProjectsList />;
+       | (EventPage(slug), _) => <EventPage slug />
        | (NotFoundPage, _) => <div> {ReasonReact.string("Page not found")} </div>
        }}
     </div>;

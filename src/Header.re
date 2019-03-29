@@ -2,18 +2,26 @@ module Styles = {
   open Css;
   let header =
     style([
-      position(fixed),
       display(`flex),
-      top(px(0)),
-      left(px(0)),
       flexDirection(row),
       alignItems(flexStart),
+      justifyContent(center),
+      backgroundColor(Theme.darkBlue),
+      width(vw(100.)),
+      padding4(~top=px(10), ~left=px(0), ~right=px(0), ~bottom=px(10)),
       fontFamily("mr-eaves-xl-modern, sans-serif"),
-      paddingLeft(vw(10.0)),
     ]);
-
+  let masthead =
+    style([
+      display(`flex),
+      alignItems(center),
+      height(`percent(100.)),
+      textDecoration(none),
+      paddingLeft(px(40)),
+      color(white),
+    ]);
   let links = style([display(`flex), justifyContent(flexEnd), width(vw(80.0))]);
-  let link = style([padding(px(20))]);
+  let link = style([paddingLeft(px(20)), color(white), textDecoration(none)]);
 };
 
 let component = ReasonReact.statelessComponent("App");
@@ -23,13 +31,17 @@ let make = (~currentSession, ~deleteSession, _children) => {
 
   render: _self => {
     <div className=Styles.header>
-      <Link href="/"> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
+      <Link href="/" className=Styles.masthead> <h1> {ReasonReact.string("Elysium")} </h1> </Link>
       <div className=Styles.links>
         ...{
              switch (currentSession) {
              | Some(_session) => [|
-                 <a href="#" onClick={_ => deleteSession()}> <h2> {ReasonReact.string("Sign out")} </h2> </a>,
-                 <Link href="/submit"> <h2> {ReasonReact.string("Submit a project")} </h2> </Link>,
+                 <a className=Styles.link href="#" onClick={_ => deleteSession()}>
+                   <h2> {ReasonReact.string("Sign out")} </h2>
+                 </a>,
+                 <Link className=Styles.link href="/submit">
+                   <h2> {ReasonReact.string("Submit a project")} </h2>
+                 </Link>,
                |]
              | None => [|
                  <Link className=Styles.link href="/organizers">
