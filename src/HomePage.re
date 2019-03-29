@@ -10,6 +10,7 @@ module Styles = {
       width(vw(100.0)),
       background(linearGradient(`deg(0), [(0, hex("0267C1")), (100, Theme.darkBlue)])),
     ]);
+  let search = style([display(`flex), alignItems(center), marginBottom(px(100))]);
   let searchBar =
     style([
       padding(px(15)),
@@ -17,8 +18,21 @@ module Styles = {
       fontSize(rem(1.2)),
       borderRadius(px(25)),
       width(vw(50.)),
+      maxWidth(px(600)),
       borderColor(transparent),
-      marginBottom(px(100)),
+    ]);
+  let searchIcon =
+    style([
+      display(`flex),
+      alignItems(center),
+      justifyContent(center),
+      borderRadius(`percent(50.)),
+      backgroundColor(orange),
+      height(px(48)),
+      width(px(48)),
+      color(black),
+      SVG.fill(currentColor),
+      transform(translateX(px(-74))),
     ]);
   let heroText = style([fontWeight(`medium), margin(px(0))]);
   let heroSubtext = style([fontWeight(`light), margin(px(0)), fontSize(rem(1.3))]);
@@ -52,7 +66,10 @@ let make = _children => {
       <div className=Styles.hero>
         <h1 className=Styles.heroText> {ReasonReact.string("Find hackathons near you")} </h1>
         <h2 className=Styles.heroSubtext> {ReasonReact.string("Elysium is the central hub for hackathons")} </h2>
-        <input className=Styles.searchBar type_="text" placeholder="Search for an event" />
+        <div className=Styles.search>
+          <input className=Styles.searchBar type_="text" placeholder="Search for an event" />
+          <button className=Styles.searchIcon> <Icon iconType=Search /> </button>
+        </div>
       </div>
       <div className=Styles.secondSection>
         <GetEventsQuery>
