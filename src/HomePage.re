@@ -1,5 +1,19 @@
 module Styles = {
   open Css;
+  let errorMessage =
+    style([
+      display(`flex),
+      flexDirection(column),
+      alignItems(center),
+      justifyContent(center),
+      fontSize(em(1.1)),
+      minWidth(px(400)),
+      minHeight(px(150)),
+      backgroundColor(Theme.errorBackground),
+      border(px(3), solid, red),
+      borderRadius(px(25)),
+    ]);
+  let error = style([display(`flex), flexDirection(column), alignItems(center)]);
   let hero =
     style([
       display(`flex),
@@ -8,7 +22,7 @@ module Styles = {
       justifyContent(center),
       color(white),
       width(vw(100.0)),
-      background(linearGradient(`deg(0), [(0, hex("0267C1")), (100, Theme.darkBlue)])),
+      background(linearGradient(`deg(0), [(0, Theme.lightBlue), (100, Theme.darkBlue)])),
     ]);
   let search = style([display(`flex), alignItems(center), marginBottom(px(100))]);
   let searchBar =
@@ -76,7 +90,13 @@ let make = _children => {
           ...{({result}) =>
             switch (result) {
             | Loading => <div> {ReasonReact.string("Loading")} </div>
-            | Error(error) => <div> {ReasonReact.string(error##message)} </div>
+            | Error(_error) =>
+              <div className=Styles.error>
+                <div className=Styles.errorMessage>
+                  {ReasonReact.string("Failed to fetch events.")}
+                  <a href="/"> {ReasonReact.string("Please refresh")} </a>
+                </div>
+              </div>
             | Data(response) =>
               <div>
                 {<div className=Styles.events>

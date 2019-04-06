@@ -29,10 +29,12 @@ module CreateProject = [%graphql
        $token: String!
      ) {
        createProject(
-         name: $name,
-         description: $description,
-         repositoryUrl: $repositoryUrl,
-         color: $color,
+         project: {
+           name: $name,
+           description: $description,
+           repositoryUrl: $repositoryUrl,
+           color: $color,
+         },
          token: $token
        ) {
          token
@@ -105,33 +107,25 @@ let make = (~session, ~createSession, _children) => {
             schema=[(`name, Required)]>
             ...{({handleSubmit, handleChange, form, getErrorForField}) =>
               <form onSubmit={ReForm.Helpers.handleDomFormSubmit(handleSubmit)}>
-                <label>
-                  {ReasonReact.string("Name: ")}
-                  <input
-                    value={form.values.name}
-                    onChange={ReForm.Helpers.handleDomFormChange(handleChange(`name))}
-                  />
-                </label>
-                <p> {getErrorForField(`name) |> Belt.Option.getWithDefault(_, "") |> ReasonReact.string} </p>
-                <label>
-                  {ReasonReact.string("Description: ")}
-                  <input
-                    value={form.values.description}
-                    onChange={ReForm.Helpers.handleDomFormChange(handleChange(`description))}
-                  />
-                </label>
-                <p> {getErrorForField(`description) |> Belt.Option.getWithDefault(_, "") |> ReasonReact.string} </p>
-                <label>
-                  {ReasonReact.string("Repository URL: ")}
-                  <input
-                    value={form.values.repositoryUrl}
-                    onChange={ReForm.Helpers.handleDomFormChange(handleChange(`repositoryUrl))}
-                  />
-                </label>
-                <p>
-                  {getErrorForField(`repositoryUrl) |> Belt.Option.getWithDefault(_, "") |> ReasonReact.string}
-                </p>
-                <button disabled={self.state.isSubmitting} type_="submit"> {"Submit" |> ReasonReact.string} </button>
+                <Input
+                  label="Name:"
+                  error={getErrorForField(`name)}
+                  value={form.values.name}
+                  onChange={ReForm.Helpers.handleDomFormChange(handleChange(`name))}
+                />
+                <Input
+                  label="Description:"
+                  error={getErrorForField(`description)}
+                  value={form.values.description}
+                  onChange={ReForm.Helpers.handleDomFormChange(handleChange(`description))}
+                />
+                <Input
+                  label="Repository URL:"
+                  error={getErrorForField(`repositoryUrl)}
+                  value={form.values.repositoryUrl}
+                  onChange={ReForm.Helpers.handleDomFormChange(handleChange(`repositoryUrl))}
+                />
+                <Button disabled={self.state.isSubmitting} type_="submit"> {"Submit" |> ReasonReact.string} </Button>
               </form>
             }
           </SubmitProjectForm>

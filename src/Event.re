@@ -9,6 +9,7 @@ module Styles = {
       textDecoration(none),
       backgroundColor(white),
       borderRadius(px(10)),
+      margin(px(20)),
       boxShadow(rgba(0, 0, 0, 0.75), ~x=px(7), ~y=px(-1), ~blur=px(33), ~spread=px(-15)),
     ]);
   let name = style([color(hex(""))]);

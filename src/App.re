@@ -18,6 +18,7 @@ type routes =
   | ProjectPage(string)
   | NotFoundPage
   | SubmitProjectPage
+  | RegisterPage
   | EventPage(string)
   | LoginPage;
 
@@ -39,6 +40,7 @@ let urlToPage = (url: ReasonReact.Router.url) =>
   | ["projects", slug] => ProjectPage(slug)
   | ["submit"] => SubmitProjectPage
   | ["login"] => LoginPage
+  | ["register"] => RegisterPage
   | [eventSlug] => EventPage(eventSlug)
   | [] => MainPage
   | _ => NotFoundPage
@@ -99,9 +101,11 @@ let make = _children => {
          ReasonReact.Router.push("/login");
          <LoginPage createSession={createSession(self)} />;
        | (LoginPage, None) => <LoginPage createSession={createSession(self)} />
-       | (LoginPage, Some(_session)) =>
+       | (LoginPage, Some(_session))
+       | (RegisterPage, Some(_session)) =>
          ReasonReact.Router.push("/");
          <ProjectsList />;
+       | (RegisterPage, None) => <RegisterPage createSession={createSession(self)} />
        | (EventPage(slug), _) => <EventPage slug />
        | (NotFoundPage, _) => <div> {ReasonReact.string("Page not found")} </div>
        }}

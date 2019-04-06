@@ -4,7 +4,7 @@ module Styles = {
     style([
       display(`flex),
       flexDirection(row),
-      alignItems(flexStart),
+      alignItems(center),
       justifyContent(center),
       backgroundColor(Theme.darkBlue),
       width(vw(100.)),
@@ -20,7 +20,7 @@ module Styles = {
       paddingLeft(px(40)),
       color(white),
     ]);
-  let links = style([display(`flex), justifyContent(flexEnd), width(vw(80.0))]);
+  let links = style([display(`flex), justifyContent(flexEnd), width(vw(80.0)), fontSize(rem(0.8))]);
   let link = style([paddingLeft(px(20)), color(white), textDecoration(none)]);
 };
 
@@ -37,18 +37,18 @@ let make = (~currentSession, ~deleteSession, _children) => {
              switch (currentSession) {
              | Some(_session) => [|
                  <a className=Styles.link href="#" onClick={_ => deleteSession()}>
-                   <h2> {ReasonReact.string("Sign out")} </h2>
+                   <h2> {ReasonReact.string("SIGN OUT")} </h2>
                  </a>,
                  <Link className=Styles.link href="/submit">
-                   <h2> {ReasonReact.string("Submit a project")} </h2>
+                   <h2> {ReasonReact.string("SUBMIT A PROJECT")} </h2>
                  </Link>,
                |]
              | None => [|
                  <Link className=Styles.link href="/organizers">
-                   <h2> {ReasonReact.string("Organizers")} </h2>
+                   <h2> {ReasonReact.string("ORGANIZERS")} </h2>
                  </Link>,
-                 <Link className=Styles.link href="/login"> <h2> {ReasonReact.string("Login")} </h2> </Link>,
-                 <Link className=Styles.link href="/signup"> <h2> {ReasonReact.string("Sign Up")} </h2> </Link>,
+                 <Link className=Styles.link href="/login"> <h2> {ReasonReact.string("LOGIN")} </h2> </Link>,
+                 <Link className=Styles.link href="/register"> <h2> {ReasonReact.string("SIGN UP")} </h2> </Link>,
                |]
              }
            }
