@@ -56,6 +56,11 @@ open ReasonApolloTypes;
 exception GraphQLErrors(array(graphqlError));
 exception EmptyResponse;
 
+let handleFiles = (f: array(FileRe.t)) => {
+  Js.log(f);
+  "All good!";
+};
+
 let make = (~session, ~createSession, _children) => {
   ...component,
   initialState: () => {isSubmitting: false},
@@ -66,7 +71,7 @@ let make = (~session, ~createSession, _children) => {
     },
   render: self => {
     <div>
-      <h1> {ReasonReact.string("New Project")} </h1>
+      <h1> {ReasonReact.string("Submit A Project")} </h1>
       <CreateProjectMutation>
         ...{(mutation, _) =>
           <SubmitProjectForm
@@ -125,6 +130,7 @@ let make = (~session, ~createSession, _children) => {
                   value={form.values.repositoryUrl}
                   onChange={ReForm.Helpers.handleDomFormChange(handleChange(`repositoryUrl))}
                 />
+                <FileUploader handleFiles />
                 <Button disabled={self.state.isSubmitting} type_="submit"> {"Submit" |> ReasonReact.string} </Button>
               </form>
             }

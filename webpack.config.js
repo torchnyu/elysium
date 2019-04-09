@@ -17,6 +17,22 @@ module.exports = {
       inject: false
     })
   ],
+  module: {
+    rules: [
+      {
+        test: /\.r.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          // `.swcrc` can be used to configure swc
+            loader: 'babel-loader',
+	    options: {
+		presets: ['@babel/preset-env'],
+		plugins: ['@babel/plugin-transform-react-jsx']
+            }
+        }
+      }
+    ]
+  },
   devServer: {
     compress: true,
     contentBase: outputDir,
