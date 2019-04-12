@@ -17,7 +17,7 @@ type routes =
   | MainPage
   | ProjectPage(string)
   | NotFoundPage
-  | SubmitProjectPage
+  | SubmitProjectPage(string)
   | RegisterPage
   | EventPage(string)
   | LoginPage;
@@ -38,10 +38,10 @@ let component = ReasonReact.reducerComponent("App");
 let urlToPage = (url: ReasonReact.Router.url) =>
   switch (url.path) {
   | ["projects", slug] => ProjectPage(slug)
-  | ["submit"] => SubmitProjectPage
   | ["login"] => LoginPage
   | ["register"] => RegisterPage
   | [eventSlug] => EventPage(eventSlug)
+  | [eventSlug, "submit"] => SubmitProjectPage(eventSlug)
   | [] => MainPage
   | _ => NotFoundPage
   };
@@ -95,9 +95,9 @@ let make = _children => {
       {switch (self.state.currentPage, self.state.currentSession) {
        | (MainPage, _) => <HomePage />
        | (ProjectPage(slug), _) => <ProjectPage slug />
-       | (SubmitProjectPage, Some(session)) =>
-         <SubmitProjectPage createSession={createSession(self)} session={Some(session)} />
-       | (SubmitProjectPage, None) =>
+       | (SubmitProjectPage(eventSlug), Some(session)) =>
+         <SubmitProjectPage eventSlug createSession={createSession(self)} session={Some(session)} />
+       | (SubmitProjectPage(_), None) =>
          ReasonReact.Router.push("/login");
          <LoginPage createSession={createSession(self)} />;
        | (LoginPage, None) => <LoginPage createSession={createSession(self)} />

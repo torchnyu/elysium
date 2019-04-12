@@ -26,9 +26,8 @@ module GetEventBySlug = [%graphql
       description
       projects {
         id
-        name
-        color
         slug
+        title
         description
       }
     }
@@ -46,7 +45,7 @@ let make = (_children, ~slug) => {
       ...{({result}) =>
         switch (result) {
         | Loading => <div> {ReasonReact.string("Loading")} </div>
-        | Error(error) => <div> {ReasonReact.string(error##message)} </div>
+        | Error(error) => <div> <h2> {ReasonReact.string(error##message)} </h2> </div>
         | Data(response) =>
           let event = response##eventBySlug;
           let projects = response##eventBySlug##projects |> Array.map(project => projectFromJs(project));
@@ -59,12 +58,11 @@ let make = (_children, ~slug) => {
                }}
             </p>
             <h2> {ReasonReact.string("Projects")} </h2>
+            <a href={"/" ++ slug ++ "/submit"}> <Button> {ReasonReact.string("Submit a project")} </Button> </a>
             <div>
               ...{
                    projects
-                   |> Array.map(({id, name, color, slug}: project) =>
-                        <Project key={string_of_int(id)} name slug color />
-                      )
+                   |> Array.map(({id, title, slug}: project) => <Project key={string_of_int(id)} name=title slug />)
                  }
             </div>
           </div>;

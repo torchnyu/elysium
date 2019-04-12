@@ -22,7 +22,8 @@
     "bs-css",
     "reason-apollo",
     "bs-reform",
-    "bs-webapi"
+    "bs-webapi",
+    "bs-axios"
   ],
   "ppx-flags": [
     "graphql_ppx/ppx"

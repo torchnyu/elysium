@@ -51,7 +51,8 @@ module Styles = {
   let heroText = style([fontWeight(`medium), margin(px(0))]);
   let heroSubtext = style([fontWeight(`light), margin(px(0)), fontSize(rem(1.3))]);
   let events = style([display(`flex), flexDirection(column), alignItems(center)]);
-  let secondSection = style([transform(translateY(px(-50)))]);
+  let secondSection =
+    style([transform(translateY(px(-50))), display(`flex), flexDirection(column), alignItems(center)]);
 };
 
 let component = ReasonReact.statelessComponent("HomePage");
@@ -89,7 +90,7 @@ let make = _children => {
         <GetEventsQuery>
           ...{({result}) =>
             switch (result) {
-            | Loading => <div> {ReasonReact.string("Loading")} </div>
+            | Loading => <LoadingIcon />
             | Error(_error) =>
               <div className=Styles.error>
                 <div className=Styles.errorMessage>
@@ -103,7 +104,7 @@ let make = _children => {
                    {ReasonReact.array(
                       Array.map(
                         event =>
-                          <Event
+                          <EventPreview
                             key={string_of_int(event##id)}
                             name=event##name
                             startTime={Js.Json.decodeNumber(event##startTime)}

@@ -19,9 +19,8 @@ module GetProjectBySlug = [%graphql
  query getProjectBySlug($slug: String!) {
     projectBySlug(slug: $slug) {
       id
-      name
       slug
-      color
+      title
       description
       contributors {
         id
@@ -47,7 +46,7 @@ let make = (_children, ~slug) => {
           let project = projectFromJs(response##projectBySlug);
           let contributors = response##projectBySlug##contributors |> Array.map(user => userFromJs(user));
           <div className=Styles.project>
-            <h1> {ReasonReact.string(project.name)} </h1>
+            <h1> {ReasonReact.string(project.title)} </h1>
             <p>
               {switch (project.description) {
                | None => ReasonReact.string("No description")

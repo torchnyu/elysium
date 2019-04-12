@@ -13,7 +13,7 @@ module Styles = {
 };
 let component = ReasonReact.statelessComponent("Button");
 
-let make = (~className="", ~disabled, ~type_, children) => {
+let make = (~className="", ~disabled=false, ~type_="button", children) => {
   ...component,
   render: _self => <button disabled type_ className={className ++ " " ++ Styles.button}> ...children </button>,
 };

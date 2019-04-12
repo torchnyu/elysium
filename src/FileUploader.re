@@ -1,7 +1,7 @@
 [@bs.deriving abstract]
 type jsProps = {
   className: string,
-  handleFiles: array(FileRe.t) => string,
+  handleFiles: array(Js.t(string)) => unit,
 };
 
 [@bs.module "./FileUploader.r"] external fileUploader: ReasonReact.reactClass = "default";

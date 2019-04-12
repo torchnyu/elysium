@@ -12,8 +12,7 @@ module GetProjects = [%graphql
  query getProjects {
     projects {
       id
-      name
-      color
+      title
       slug
       description
     }
@@ -41,8 +40,7 @@ let make = _children => {
                       <Project
                         key={string_of_int(projectRecord.id)}
                         slug={projectRecord.slug}
-                        name={projectRecord.name}
-                        color={projectRecord.color}
+                        name={projectRecord.title}
                       />;
                     },
                     response##projects,

@@ -248,20 +248,6 @@
               "defaultValue": null
             },
             {
-              "name": "color",
-              "description": null,
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
               "name": "description",
               "description": null,
               "type": {
@@ -1138,7 +1124,7 @@
               "deprecationReason": null
             },
             {
-              "name": "repositoryUrl",
+              "name": "title",
               "description": null,
               "args": [],
               "type": {
@@ -1154,7 +1140,7 @@
               "deprecationReason": null
             },
             {
-              "name": "color",
+              "name": "repositoryUrl",
               "description": null,
               "args": [],
               "type": {

@@ -23,3 +23,5 @@ let getYear = dateFloat => {
   let date = Js.Date.fromFloat(dateFloat);
   string_of_float(Js.Date.getFullYear(date));
 };
+
+let apiUrl = "http://localhost:4000";

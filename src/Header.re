@@ -39,9 +39,6 @@ let make = (~currentSession, ~deleteSession, _children) => {
                  <a className=Styles.link href="#" onClick={_ => deleteSession()}>
                    <h2> {ReasonReact.string("SIGN OUT")} </h2>
                  </a>,
-                 <Link className=Styles.link href="/submit">
-                   <h2> {ReasonReact.string("SUBMIT A PROJECT")} </h2>
-                 </Link>,
                |]
              | None => [|
                  <Link className=Styles.link href="/organizers">

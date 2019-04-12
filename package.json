@@ -17,6 +17,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "bs-axios": "0.0.41",
     "bs-css": "^8.0.2",
     "bs-reform": "^6.0.0-gadt.5",
     "bs-webapi": "^0.13.6",
