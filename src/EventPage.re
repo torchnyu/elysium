@@ -9,6 +9,7 @@ module Styles = {
       minWidth(vw(90.0)),
       color(hex("232c33")),
     ]);
+  let projectsHeader = style([fontSize(rem(2.0))]);
 };
 let component = ReasonReact.statelessComponent("ProjectPage");
 
@@ -51,20 +52,15 @@ let make = (_children, ~slug) => {
           let projects = response##eventBySlug##projects |> Array.map(project => projectFromJs(project));
           <div className=Styles.event>
             <h1> {ReasonReact.string(event##name)} </h1>
+            <a href={"/" ++ slug ++ "/submit"}> <Button> {ReasonReact.string("Submit a project")} </Button> </a>
             <p>
               {switch (event##description) {
                | None => ReasonReact.string("No description")
                | Some(desc) => ReasonReact.string(desc)
                }}
             </p>
-            <h2> {ReasonReact.string("Projects")} </h2>
-            <a href={"/" ++ slug ++ "/submit"}> <Button> {ReasonReact.string("Submit a project")} </Button> </a>
-            <div>
-              ...{
-                   projects
-                   |> Array.map(({id, title, slug}: project) => <Project key={string_of_int(id)} name=title slug />)
-                 }
-            </div>
+            <h2 className=Styles.projectsHeader> {ReasonReact.string("Projects")} </h2>
+            <ProjectsGrid projects />
           </div>;
         }
       }

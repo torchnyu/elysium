@@ -7,7 +7,7 @@ module Styles = {
       alignItems(center),
       justifyContent(center),
       minHeight(px(300)),
-      width(px(400)),
+      width(px(300)),
       marginBottom(px(200)),
       `transition("box-shadow 0.2s"),
       boxShadow(rgba(0, 0, 0, 0.75), ~x=px(7), ~y=px(7), ~blur=px(27), ~spread=px(-2)),

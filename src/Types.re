@@ -17,3 +17,9 @@ type session = {
   token: string,
   user,
 };
+
+[@bs.deriving jsConverter]
+type medium = {
+  id: int,
+  url: string,
+};

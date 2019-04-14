@@ -104,7 +104,7 @@ let make = _children => {
        | (LoginPage, Some(_session))
        | (RegisterPage, Some(_session)) =>
          ReasonReact.Router.push("/");
-         <ProjectsList />;
+         <HomePage />;
        | (RegisterPage, None) => <RegisterPage createSession={createSession(self)} />
        | (EventPage(slug), _) => <EventPage slug />
        | (NotFoundPage, _) => <div> {ReasonReact.string("Page not found")} </div>

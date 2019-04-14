@@ -9,6 +9,9 @@ module Styles = {
       minWidth(vw(90.0)),
       color(hex("232c33")),
     ]);
+  let contributors = style([padding(px(20))]);
+  let images = style([display(`flex), flexDirection(column)]);
+  let image = style([maxWidth(px(500)), padding(px(10))]);
 };
 let component = ReasonReact.statelessComponent("ProjectPage");
 
@@ -25,6 +28,10 @@ module GetProjectBySlug = [%graphql
       contributors {
         id
         displayName
+      }
+      media {
+        id
+        url
       }
     }
  }
@@ -45,6 +52,7 @@ let make = (_children, ~slug) => {
         | Data(response) =>
           let project = projectFromJs(response##projectBySlug);
           let contributors = response##projectBySlug##contributors |> Array.map(user => userFromJs(user));
+          let media = response##projectBySlug##media |> Array.map(media => mediumFromJs(media));
           <div className=Styles.project>
             <h1> {ReasonReact.string(project.title)} </h1>
             <p>
@@ -54,13 +62,16 @@ let make = (_children, ~slug) => {
                }}
             </p>
             <h2> {ReasonReact.string("Contributors")} </h2>
-            <div>
+            <div className=Styles.contributors>
               ...{
                    contributors
                    |> Array.map((c: user) =>
                         <div key={string_of_int(c.id)}> {ReasonReact.string(c.displayName)} </div>
                       )
                  }
+            </div>
+            <div className=Styles.images>
+              ...{media |> Array.map((m: medium) => <img className=Styles.image src={m.url} />)}
             </div>
           </div>;
         }

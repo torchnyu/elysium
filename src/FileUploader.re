@@ -1,10 +1,18 @@
+open Types;
+
 [@bs.deriving abstract]
 type jsProps = {
   className: string,
-  handleFiles: array(Js.t(string)) => unit,
+  resourceName: string,
+  resourceId: int,
+  apiUrl: string,
 };
 
 [@bs.module "./FileUploader.r"] external fileUploader: ReasonReact.reactClass = "default";
 
-let make = (~className="", ~handleFiles, _children) =>
-  ReasonReact.wrapJsForReason(~reactClass=fileUploader, ~props=jsProps(~className, ~handleFiles), _children);
+let make = (~className="", ~resourceName, ~resourceId, _children) =>
+  ReasonReact.wrapJsForReason(
+    ~reactClass=fileUploader,
+    ~props=jsProps(~className, ~resourceName, ~resourceId, ~apiUrl=Utils.apiUrl),
+    _children,
+  );
