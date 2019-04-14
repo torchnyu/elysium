@@ -15,12 +15,15 @@ module Styles = {
 
 open Types;
 
-let make = (~projects, _children) => {
+let make = (~projects, ~eventSlug, _children) => {
   ...component,
   render: _self =>
     <div className=Styles.projectsGrid>
       ...{
-           projects |> Array.map(({id, title, slug}: project) => <Project key={string_of_int(id)} name=title slug />)
+           projects
+           |> Array.map(({id, title, slug}: project) =>
+                <Project key={string_of_int(id)} name=title slug eventSlug />
+              )
          }
     </div>,
 };

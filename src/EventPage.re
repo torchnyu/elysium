@@ -60,7 +60,7 @@ let make = (_children, ~slug) => {
                }}
             </p>
             <h2 className=Styles.projectsHeader> {ReasonReact.string("Projects")} </h2>
-            <ProjectsGrid projects />
+            <ProjectsGrid projects eventSlug=slug />
           </div>;
         }
       }

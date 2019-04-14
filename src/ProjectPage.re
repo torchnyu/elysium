@@ -19,8 +19,8 @@ open Types;
 
 module GetProjectBySlug = [%graphql
   {|
- query getProjectBySlug($slug: String!) {
-    projectBySlug(slug: $slug) {
+ query getProjectBySlug($slug: String!, $eventSlug: String!) {
+    projectBySlugAndEvent(slug: $slug, eventSlug: $eventSlug) {
       id
       slug
       title
@@ -40,19 +40,19 @@ module GetProjectBySlug = [%graphql
 
 module GetProjectBySlugQuery = ReasonApollo.CreateQuery(GetProjectBySlug);
 
-let make = (_children, ~slug) => {
+let make = (_children, ~slug, ~eventSlug) => {
   ...component,
   render: _self => {
-    let slugQuery = GetProjectBySlug.make(~slug, ());
+    let slugQuery = GetProjectBySlug.make(~slug, ~eventSlug, ());
     <GetProjectBySlugQuery variables=slugQuery##variables>
       ...{({result}) =>
         switch (result) {
         | Loading => <div> {ReasonReact.string("Loading")} </div>
         | Error(error) => <div> {ReasonReact.string(error##message)} </div>
         | Data(response) =>
-          let project = projectFromJs(response##projectBySlug);
-          let contributors = response##projectBySlug##contributors |> Array.map(user => userFromJs(user));
-          let media = response##projectBySlug##media |> Array.map(media => mediumFromJs(media));
+          let project = projectFromJs(response##projectBySlugAndEvent);
+          let contributors = response##projectBySlugAndEvent##contributors |> Array.map(user => userFromJs(user));
+          let media = response##projectBySlugAndEvent##media |> Array.map(media => mediumFromJs(media));
           <div className=Styles.project>
             <h1> {ReasonReact.string(project.title)} </h1>
             <p>

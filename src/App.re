@@ -15,7 +15,7 @@ open Belt;
 
 type routes =
   | MainPage
-  | ProjectPage(string)
+  | ProjectPage(string, string)
   | NotFoundPage
   | SubmitProjectPage(string)
   | RegisterPage
@@ -37,11 +37,11 @@ let component = ReasonReact.reducerComponent("App");
 
 let urlToPage = (url: ReasonReact.Router.url) =>
   switch (url.path) {
-  | ["projects", slug] => ProjectPage(slug)
   | ["login"] => LoginPage
   | ["register"] => RegisterPage
   | [eventSlug] => EventPage(eventSlug)
   | [eventSlug, "submit"] => SubmitProjectPage(eventSlug)
+  | [eventSlug, slug] => ProjectPage(eventSlug, slug)
   | [] => MainPage
   | _ => NotFoundPage
   };
@@ -94,7 +94,7 @@ let make = _children => {
       <Header deleteSession={deleteSession(self)} currentSession={self.state.currentSession} />
       {switch (self.state.currentPage, self.state.currentSession) {
        | (MainPage, _) => <HomePage />
-       | (ProjectPage(slug), _) => <ProjectPage slug />
+       | (ProjectPage(eventSlug, slug), _) => <ProjectPage slug eventSlug />
        | (SubmitProjectPage(eventSlug), Some(session)) =>
          <SubmitProjectPage eventSlug createSession={createSession(self)} session={Some(session)} />
        | (SubmitProjectPage(_), None) =>

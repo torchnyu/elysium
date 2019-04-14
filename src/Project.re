@@ -19,10 +19,10 @@ module Styles = {
 
 let component = ReasonReact.statelessComponent("Project");
 
-let make = (_children, ~name, ~slug) => {
+let make = (_children, ~name, ~eventSlug, ~slug) => {
   ...component,
   render: _self => {
-    <Link href={"/projects/" ++ slug} className=Styles.project>
+    <Link href={"/" ++ eventSlug ++ "/" ++ slug} className=Styles.project>
       <Icon iconType=ProjectPlaceholder />
       <h1 className=Styles.name> {ReasonReact.string(name)} </h1>
     </Link>;
