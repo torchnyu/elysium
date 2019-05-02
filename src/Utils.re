@@ -24,4 +24,12 @@ let getYear = dateFloat => {
   string_of_float(Js.Date.getFullYear(date));
 };
 
+let dateRangeToStr = (startTime, endTime) => {
+  switch (startTime, endTime) {
+  | (Some(startTime), Some(endTime)) =>
+    dateFloatToAbbr(startTime) ++ {js| – |js} ++ dateFloatToAbbr(endTime) ++ " " ++ getYear(endTime)
+  | (_, _) => "N/A"
+  };
+};
+
 let apiUrl = "http://localhost:4000";

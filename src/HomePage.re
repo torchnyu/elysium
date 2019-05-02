@@ -45,6 +45,8 @@ module Styles = {
       height(px(48)),
       width(px(48)),
       color(black),
+      borderColor(transparent),
+      backgroundImage(Theme.buttonGradient),
       SVG.fill(currentColor),
       transform(translateX(px(-74))),
     ]);

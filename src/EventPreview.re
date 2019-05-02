@@ -14,12 +14,9 @@ module Styles = {
     ]);
   let name = style([color(hex(""))]);
   let location = style([display(`flex), alignItems(center)]);
-  let icon = style([width(px(20)), padding(px(4))]);
-  let date = style([display(`flex), alignItems(center)]);
   let image = style([width(px(200)), height(px(200)), unsafe("object-fit", "contain")]);
   let info = style([display(`flex), flexDirection(column)]);
 };
-open Utils;
 let component = ReasonReact.statelessComponent("Event");
 
 let make = (~name, ~startTime, ~endTime, ~slug, _children) => {
@@ -33,16 +30,7 @@ let make = (~name, ~startTime, ~endTime, ~slug, _children) => {
           <Icon className=Styles.icon iconType=LocationPin />
           {ReasonReact.string("Toronto, Canada")}
         </div>
-        <div className=Styles.date>
-          <Icon className=Styles.icon iconType=Calendar />
-          {switch (startTime, endTime) {
-           | (Some(startTime), Some(endTime)) =>
-             ReasonReact.string(
-               dateFloatToAbbr(startTime) ++ {js| – |js} ++ dateFloatToAbbr(endTime) ++ " " ++ getYear(endTime),
-             )
-           | (_, _) => ReasonReact.string("N/A")
-           }}
-        </div>
+        <DateRange startTime endTime />
       </div>
     </a>;
   },
