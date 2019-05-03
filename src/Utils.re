@@ -12,22 +12,37 @@ let monthToAbbr = month =>
   | m => raise(InvalidMonth(m))
   };
 
-let dateFloatToAbbr = dateFloat => {
+let parseDateFloat = dateFloat => {
   let date = Js.Date.fromFloat(dateFloat);
   let month = monthToAbbr(Js.Date.getMonth(date));
   let day = int_of_float(Js.Date.getDay(date));
-  month ++ " " ++ string_of_int(day + 1);
-};
-
-let getYear = dateFloat => {
-  let date = Js.Date.fromFloat(dateFloat);
-  string_of_float(Js.Date.getFullYear(date));
+  let year = Js.Date.getFullYear(date);
+  (month, day + 1, year);
 };
 
 let dateRangeToStr = (startTime, endTime) => {
   switch (startTime, endTime) {
   | (Some(startTime), Some(endTime)) =>
-    dateFloatToAbbr(startTime) ++ {js| – |js} ++ dateFloatToAbbr(endTime) ++ " " ++ getYear(endTime)
+    let (startMonth, startDay, startYear) = parseDateFloat(startTime);
+    let (endMonth, endDay, endYear) = parseDateFloat(endTime);
+    /* All date strings start with this, but depending on how close the dates
+       are, we elide some of the repetative details */
+    let dateStringStart = startMonth ++ " " ++ string_of_int(startDay);
+    if (startMonth == endMonth && startYear == endYear) {
+      if (startDay == endDay) {
+        dateStringStart ++ " " ++ Js.Float.toString(startYear);
+      } else {
+        dateStringStart ++ {js| – |js} ++ string_of_int(endDay) ++ " " ++ Js.Float.toString(startYear);
+      };
+    } else {
+      dateStringStart
+      ++ {js| – |js}
+      ++ endMonth
+      ++ " "
+      ++ string_of_int(endDay)
+      ++ " "
+      ++ Js.Float.toString(startYear);
+    };
   | (_, _) => "N/A"
   };
 };

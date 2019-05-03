@@ -10,7 +10,10 @@ module Styles = {
       minWidth(vw(90.0)),
       color(hex("232c33")),
     ]);
+  let name = style([margin(px(0))]);
+  let dateRange = style([paddingBottom(px(20))]);
   let icon = style([width(px(20)), padding(px(4))]);
+  let infoRow = style([display(`flex), alignItems(center)]);
   let header = style([display(`flex), width(vw(90.))]);
   let buttons =
     style([display(`flex), alignItems(center), justifyContent(flexEnd), flexWrap(wrap), width(vw(80.))]);
@@ -62,12 +65,18 @@ let make = (_children, ~slug) => {
             <div className=Styles.header>
               <img className=Styles.photo src="/img/event_placeholder.png" />
               <div className=Styles.details>
-                <h1> {ReasonReact.string(event##name)} </h1>
-                <DateRange
-                  startTime={Js.Json.decodeNumber(event##startTime)}
-                  endTime={Js.Json.decodeNumber(event##endTime)}
-                />
-                <div> <Icon className=Styles.icon iconType=LocationPin /> </div>
+                <h1 className=Styles.name> {ReasonReact.string(event##name)} </h1>
+                <div className=Styles.dateRange>
+                  <DateRange
+                    startTime={Js.Json.decodeNumber(event##startTime)}
+                    endTime={Js.Json.decodeNumber(event##endTime)}
+                  />
+                </div>
+                <div className=Styles.infoRow>
+                  <Icon className=Styles.icon iconType=LocationPin />
+                  {ReasonReact.string("Pasadena, California")}
+                </div>
+                <div className=Styles.infoRow> {ReasonReact.string("New York University")} </div>
               </div>
               <div className=Styles.buttons>
                 <a href={"/" ++ slug ++ "/submit"}> <Button> {ReasonReact.string("SUBMIT")} </Button> </a>
