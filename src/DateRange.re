@@ -7,11 +7,11 @@ module Styles = {
 open Utils;
 let component = ReasonReact.statelessComponent("DateRange");
 
-let make = (~startTime, ~endTime, _children) => {
+let make = (~startTime, ~endTime, children) => {
   ...component,
   render: _self =>
     <div className=Styles.date>
-      <Icon className=Styles.icon iconType=Calendar />
+      <div> ...children </div>
       {ReasonReact.string(dateRangeToStr(startTime, endTime))}
     </div>,
 };

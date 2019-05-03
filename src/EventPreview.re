@@ -12,6 +12,7 @@ module Styles = {
       margin(px(20)),
       boxShadow(rgba(0, 0, 0, 0.75), ~x=px(7), ~y=px(-1), ~blur=px(33), ~spread=px(-15)),
     ]);
+  let icon = style([width(px(20)), padding(px(4))]);
   let name = style([color(hex(""))]);
   let location = style([display(`flex), alignItems(center)]);
   let image = style([width(px(200)), height(px(200)), unsafe("object-fit", "contain")]);
@@ -30,7 +31,7 @@ let make = (~name, ~startTime, ~endTime, ~slug, _children) => {
           <Icon className=Styles.icon iconType=LocationPin />
           {ReasonReact.string("Toronto, Canada")}
         </div>
-        <DateRange startTime endTime />
+        <DateRange startTime endTime> <Icon className=Styles.icon iconType=Calendar /> </DateRange>
       </div>
     </a>;
   },

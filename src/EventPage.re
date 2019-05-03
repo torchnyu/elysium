@@ -10,6 +10,7 @@ module Styles = {
       minWidth(vw(90.0)),
       color(hex("232c33")),
     ]);
+  let icon = style([width(px(20)), padding(px(4))]);
   let header = style([display(`flex), width(vw(90.))]);
   let buttons =
     style([display(`flex), alignItems(center), justifyContent(flexEnd), flexWrap(wrap), width(vw(80.))]);
@@ -66,6 +67,7 @@ let make = (_children, ~slug) => {
                   startTime={Js.Json.decodeNumber(event##startTime)}
                   endTime={Js.Json.decodeNumber(event##endTime)}
                 />
+                <div> <Icon className=Styles.icon iconType=LocationPin /> </div>
               </div>
               <div className=Styles.buttons>
                 <a href={"/" ++ slug ++ "/submit"}> <Button> {ReasonReact.string("SUBMIT")} </Button> </a>
