@@ -35,36 +35,23 @@ module Styles = {
     style([paddingLeft(px(20)), color(if (isHome) {Theme.white} else {Theme.black}), textDecoration(none)]);
 };
 
-let component = ReasonReact.statelessComponent("App");
-let make = (~currentSession, ~deleteSession, ~isHome, _children) => {
-  /* spread the other default fields of component here and override a few */
-  ...component,
-
-  render: _self => {
-    <div className={Styles.header(isHome)}>
-      <Link href="/" className={Styles.masthead(isHome)}> <h1> {ReasonReact.string("elysium")} </h1> </Link>
-      <div className=Styles.links>
-        ...{
-             switch (currentSession) {
-             | Some(_session) => [|
-                 <a className={Styles.link(isHome)} href="#" onClick={_ => deleteSession()}>
-                   <h2> {ReasonReact.string("SIGN OUT")} </h2>
-                 </a>,
-               |]
-             | None => [|
-                 <Link className={Styles.link(isHome)} href="/organizers">
-                   <h2> {ReasonReact.string("ORGANIZERS")} </h2>
-                 </Link>,
-                 <Link className={Styles.link(isHome)} href="/login">
-                   <h2> {ReasonReact.string("LOGIN")} </h2>
-                 </Link>,
-                 <Link className={Styles.link(isHome)} href="/register">
-                   <h2> {ReasonReact.string("SIGN UP")} </h2>
-                 </Link>,
-               |]
-             }
-           }
-      </div>
-    </div>;
-  },
+[@react.component]
+let make = (~currentSession, ~deleteSession, ~isHome) => {
+  <div className={Styles.header(isHome)}>
+    <Link href="/" className={Styles.masthead(isHome)}> <h1> {React.string("elysium")} </h1> </Link>
+    <div className=Styles.links>
+      {switch (currentSession) {
+       | Some(_session) => [|
+           <a className={Styles.link(isHome)} href="#" onClick={_ => deleteSession()}>
+             <h2> {React.string("SIGN OUT")} </h2>
+           </a>,
+         |]
+       | None => [|
+           <Link className={Styles.link(isHome)} href="/organizers"> <h2> {React.string("ORGANIZERS")} </h2> </Link>,
+           <Link className={Styles.link(isHome)} href="/login"> <h2> {React.string("LOGIN")} </h2> </Link>,
+           <Link className={Styles.link(isHome)} href="/register"> <h2> {React.string("SIGN UP")} </h2> </Link>,
+         |]
+       }}
+    </div>
+  </div>;
 };

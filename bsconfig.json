@@ -5,7 +5,7 @@
 {
   "name": "elysium",
   "reason": {
-    "react-jsx": 2
+    "react-jsx": 3
   },
   "sources": {
     "dir" : "src",

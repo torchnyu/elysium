@@ -49,53 +49,49 @@ module GetEventBySlug = [%graphql
 open Utils;
 module GetEventBySlugQuery = ReasonApollo.CreateQuery(GetEventBySlug);
 
+[@react.component]
 let make = (_children, ~slug) => {
-  ...component,
-  render: _self => {
-    let slugQuery = GetEventBySlug.make(~slug, ());
-    <GetEventBySlugQuery variables=slugQuery##variables>
-      ...{({result}) =>
-        switch (result) {
-        | Loading => <div> {ReasonReact.string("Loading")} </div>
-        | Error(error) => <div> <h2> {ReasonReact.string(error##message)} </h2> </div>
-        | Data(response) =>
-          let event = response##eventBySlug;
-          let projects = response##eventBySlug##projects |> Array.map(project => projectFromJs(project));
-          <div className=Styles.event>
-            <div className=Styles.header>
-              <img className=Styles.photo src="/img/event_placeholder.png" />
-              <div className=Styles.details>
-                <h1 className=Styles.name> {ReasonReact.string(event##name)} </h1>
-                <div className=Styles.dateRange>
-                  <DateRange
-                    startTime={Js.Json.decodeNumber(event##startTime)}
-                    endTime={Js.Json.decodeNumber(event##endTime)}
-                  />
-                </div>
-                <div className=Styles.infoRow>
-                  <Icon className=Styles.icon iconType=LocationPin />
-                  {ReasonReact.string("Pasadena, California")}
-                </div>
-                <div className=Styles.infoRow> {ReasonReact.string("New York University")} </div>
+  let slugQuery = GetEventBySlug.make(~slug, ());
+  <GetEventBySlugQuery variables=slugQuery##variables>
+    ...{({result}) =>
+      switch (result) {
+      | Loading => <div> {React.string("Loading")} </div>
+      | Error(error) => <div> <h2> {React.string(error##message)} </h2> </div>
+      | Data(response) =>
+        let event = response##eventBySlug;
+        let projects = response##eventBySlug##projects |> Array.map(project => projectFromJs(project));
+        <div className=Styles.event>
+          <div className=Styles.header>
+            <img className=Styles.photo src="/img/event_placeholder.png" />
+            <div className=Styles.details>
+              <h1 className=Styles.name> {React.string(event##name)} </h1>
+              <div className=Styles.dateRange>
+                <DateRange
+                  startTime={Js.Json.decodeNumber(event##startTime)}
+                  endTime={Js.Json.decodeNumber(event##endTime)}
+                />
               </div>
-              <div className=Styles.buttons>
-                <a href={"/" ++ slug ++ "/submit"}> <Button> {ReasonReact.string("SUBMIT")} </Button> </a>
-                <a href={"/" ++ slug ++ "/submit"}>
-                  <Button color=Secondary> {ReasonReact.string("VISIT SITE")} </Button>
-                </a>
+              <div className=Styles.infoRow>
+                <Icon className=Styles.icon iconType=LocationPin />
+                {React.string("Pasadena, California")}
               </div>
+              <div className=Styles.infoRow> {React.string("New York University")} </div>
             </div>
-            <p>
-              {switch (event##description) {
-               | None => ReasonReact.string("No description")
-               | Some(desc) => ReasonReact.string(desc)
-               }}
-            </p>
-            <h2 className=Styles.projectsHeader> {ReasonReact.string("Projects")} </h2>
-            <ProjectsGrid projects eventSlug=slug />
-          </div>;
-        }
+            <div className=Styles.buttons>
+              <a href={"/" ++ slug ++ "/submit"}> <Button> {React.string("SUBMIT")} </Button> </a>
+              <a href={"/" ++ slug ++ "/submit"}> <Button color=Secondary> {React.string("VISIT SITE")} </Button> </a>
+            </div>
+          </div>
+          <p>
+            {switch (event##description) {
+             | None => React.string("No description")
+             | Some(desc) => React.string(desc)
+             }}
+          </p>
+          <h2 className=Styles.projectsHeader> {React.string("Projects")} </h2>
+          <ProjectsGrid projects eventSlug=slug />
+        </div>;
       }
-    </GetEventBySlugQuery>;
-  },
+    }
+  </GetEventBySlugQuery>;
 };

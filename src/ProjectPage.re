@@ -40,42 +40,36 @@ module GetProjectBySlug = [%graphql
 
 module GetProjectBySlugQuery = ReasonApollo.CreateQuery(GetProjectBySlug);
 
+[@react.component]
 let make = (_children, ~slug, ~eventSlug) => {
-  ...component,
-  render: _self => {
-    let slugQuery = GetProjectBySlug.make(~slug, ~eventSlug, ());
-    <GetProjectBySlugQuery variables=slugQuery##variables>
-      ...{({result}) =>
-        switch (result) {
-        | Loading => <div> {ReasonReact.string("Loading")} </div>
-        | Error(error) => <div> {ReasonReact.string(error##message)} </div>
-        | Data(response) =>
-          let project = projectFromJs(response##projectBySlugAndEvent);
-          let contributors = response##projectBySlugAndEvent##contributors |> Array.map(user => userFromJs(user));
-          let media = response##projectBySlugAndEvent##media |> Array.map(media => mediumFromJs(media));
-          <div className=Styles.project>
-            <h1> {ReasonReact.string(project.title)} </h1>
-            <p>
-              {switch (project.description) {
-               | None => ReasonReact.string("No description")
-               | Some(desc) => ReasonReact.string(desc)
-               }}
-            </p>
-            <h2> {ReasonReact.string("Contributors")} </h2>
-            <div className=Styles.contributors>
-              ...{
-                   contributors
-                   |> Array.map((c: user) =>
-                        <div key={string_of_int(c.id)}> {ReasonReact.string(c.displayName)} </div>
-                      )
-                 }
-            </div>
-            <div className=Styles.images>
-              ...{media |> Array.map((m: medium) => <img className=Styles.image src={m.url} />)}
-            </div>
-          </div>;
-        }
-      }
-    </GetProjectBySlugQuery>;
-  },
+  let slugQuery = GetProjectBySlug.make(~slug, ~eventSlug, ());
+  <GetProjectBySlugQuery variables=slugQuery##variables>
+    {({result}) =>
+       switch (result) {
+       | Loading => <div> {React.string("Loading")} </div>
+       | Error(error) => <div> {React.string(error##message)} </div>
+       | Data(response) =>
+         let project = projectFromJs(response##projectBySlugAndEvent);
+         let contributors = response##projectBySlugAndEvent##contributors |> Array.map(user => userFromJs(user));
+         let media = response##projectBySlugAndEvent##media |> Array.map(media => mediumFromJs(media));
+         <div className=Styles.project>
+           <h1> {React.string(project.title)} </h1>
+           <p>
+             {switch (project.description) {
+              | None => React.string("No description")
+              | Some(desc) => React.string(desc)
+              }}
+           </p>
+           <h2> {React.string("Contributors")} </h2>
+           <div className=Styles.contributors>
+             {contributors
+              |> Array.map((c: user) => <div key={string_of_int(c.id)}> {React.string(c.displayName)} </div>)
+              |> React.array}
+           </div>
+           <div className=Styles.images>
+             {media |> Array.map((m: medium) => <img className=Styles.image src={m.url} />) |> React.array}
+           </div>
+         </div>;
+       }}
+  </GetProjectBySlugQuery>;
 };

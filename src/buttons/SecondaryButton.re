@@ -30,12 +30,10 @@ module Styles = {
       unsafe("-webkit-text-fill-color", "transparent"),
     ]);
 };
-let component = ReasonReact.statelessComponent("Button");
 
-let make = (~className="", ~disabled=false, ~type_="button", children) => {
-  ...component,
-  render: _self =>
-    <button disabled type_ className={className ++ " " ++ Styles.buttonBorder}>
-      <div className=Styles.button> <div className=Styles.buttonText> ...children </div> </div>
-    </button>,
+[@react.component]
+let make = (~className="", ~disabled=false, ~type_="button", ~children) => {
+  <button disabled type_ className={className ++ " " ++ Styles.buttonBorder}>
+    <div className=Styles.button> <div className=Styles.buttonText> children </div> </div>
+  </button>;
 };

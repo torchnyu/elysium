@@ -22,7 +22,9 @@ module Styles = {
       justifyContent(center),
       color(white),
       width(vw(100.0)),
-      background(linearGradient(`deg(0), [(0, Theme.lightBlue), (100, Theme.darkBlue)])),
+      background(
+        linearGradient(`deg(0.), [(`percent(0.), Theme.lightBlue), (`percent(100.), Theme.darkBlue)]),
+      ),
     ]);
   let search = style([display(`flex), alignItems(center), marginBottom(px(100))]);
   let searchBar =
@@ -57,8 +59,6 @@ module Styles = {
     style([transform(translateY(px(-50))), display(`flex), flexDirection(column), alignItems(center)]);
 };
 
-let component = ReasonReact.statelessComponent("HomePage");
-
 module GetEvents = [%graphql
   {|
  query getEvents {
@@ -76,52 +76,50 @@ module GetEvents = [%graphql
 
 module GetEventsQuery = ReasonApollo.CreateQuery(GetEvents);
 
+[@react.component]
 let make = _children => {
-  ...component,
-  render: _self => {
-    <div>
-      <div className=Styles.hero>
-        <h1 className=Styles.heroText> {ReasonReact.string("Find hackathons near you")} </h1>
-        <h2 className=Styles.heroSubtext> {ReasonReact.string("Elysium is the central hub for hackathons")} </h2>
-        <div className=Styles.search>
-          <input className=Styles.searchBar type_="text" placeholder="Search for an event" />
-          <button className=Styles.searchIcon> <Icon iconType=Search /> </button>
-        </div>
+  <div>
+    <div className=Styles.hero>
+      <h1 className=Styles.heroText> {React.string("Find hackathons near you")} </h1>
+      <h2 className=Styles.heroSubtext> {React.string("Elysium is the central hub for hackathons")} </h2>
+      <div className=Styles.search>
+        <input className=Styles.searchBar type_="text" placeholder="Search for an event" />
+        <button className=Styles.searchIcon> <Icon iconType=Icon.Search /> </button>
       </div>
-      <div className=Styles.secondSection>
-        <GetEventsQuery>
-          ...{({result}) =>
-            switch (result) {
-            | Loading => <LoadingIcon />
-            | Error(_error) =>
-              <div className=Styles.error>
-                <div className=Styles.errorMessage>
-                  {ReasonReact.string("Failed to fetch events.")}
-                  <a href="/"> {ReasonReact.string("Please refresh")} </a>
-                </div>
+    </div>
+    <div className=Styles.secondSection>
+      <GetEventsQuery>
+        ...{({result}) =>
+          switch (result) {
+          | Loading => <LoadingIcon />
+          | Error(_error) =>
+            <div className=Styles.error>
+              <div className=Styles.errorMessage>
+                {React.string("Failed to fetch events.")}
+                <a href="/"> {React.string("Please refresh")} </a>
               </div>
-            | Data(response) =>
-              <div>
-                {<div className=Styles.events>
-                   {ReasonReact.array(
-                      Array.map(
-                        event =>
-                          <EventPreview
-                            key={string_of_int(event##id)}
-                            name=event##name
-                            startTime={Js.Json.decodeNumber(event##startTime)}
-                            endTime={Js.Json.decodeNumber(event##endTime)}
-                            slug={event##slug}
-                          />,
-                        response##events,
-                      ),
-                    )}
-                 </div>}
-              </div>
-            }
+            </div>
+          | Data(response) =>
+            <div>
+              {<div className=Styles.events>
+                 {ReasonReact.array(
+                    Array.map(
+                      event =>
+                        <EventPreview
+                          key={string_of_int(event##id)}
+                          name=event##name
+                          startTime={Js.Json.decodeNumber(event##startTime)}
+                          endTime={Js.Json.decodeNumber(event##endTime)}
+                          slug={event##slug}
+                        />,
+                      response##events,
+                    ),
+                  )}
+               </div>}
+            </div>
           }
-        </GetEventsQuery>
-      </div>
-    </div>;
-  },
+        }
+      </GetEventsQuery>
+    </div>
+  </div>;
 };

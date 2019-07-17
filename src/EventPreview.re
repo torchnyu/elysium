@@ -18,21 +18,18 @@ module Styles = {
   let image = style([width(px(200)), height(px(200)), unsafe("object-fit", "contain")]);
   let info = style([display(`flex), flexDirection(column)]);
 };
-let component = ReasonReact.statelessComponent("Event");
 
-let make = (~name, ~startTime, ~endTime, ~slug, _children) => {
-  ...component,
-  render: _self => {
-    <a href={"/" ++ slug} className=Styles.event>
-      <img className=Styles.image src="/img/stock.jpg" />
-      <div className=Styles.info>
-        <h2 className=Styles.name> {ReasonReact.string(name)} </h2>
-        <div className=Styles.location>
-          <Icon className=Styles.icon iconType=LocationPin />
-          {ReasonReact.string("Toronto, Canada")}
-        </div>
-        <DateRange startTime endTime> <Icon className=Styles.icon iconType=Calendar /> </DateRange>
+[@react.component]
+let make = (~name, ~startTime, ~endTime, ~slug) => {
+  <a href={"/" ++ slug} className=Styles.event>
+    <img className=Styles.image src="/img/stock.jpg" />
+    <div className=Styles.info>
+      <h2 className=Styles.name> {React.string(name)} </h2>
+      <div className=Styles.location>
+        <Icon className=Styles.icon iconType=Icon.LocationPin />
+        {React.string("Toronto, Canada")}
       </div>
-    </a>;
-  },
+      <DateRange startTime endTime> <Icon className=Styles.icon iconType=Icon.Calendar /> </DateRange>
+    </div>
+  </a>;
 };

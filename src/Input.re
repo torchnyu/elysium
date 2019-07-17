@@ -7,19 +7,16 @@ module Styles = {
   let inputWrapper = style([display(`flex), alignItems(center)]);
 };
 
-let component = ReasonReact.statelessComponent("Input");
-
-let make = (~value, ~onChange, ~className="", ~label="", ~type_="", ~error=None, _children) => {
-  ...component,
-  render: _self =>
-    <div className=Styles.input>
-      <div className=Styles.inputWrapper>
-        <label className=Styles.label> {ReasonReact.string(label)} </label>
-        <input value onChange type_ className={className ++ " " ++ Styles.textField} />
-      </div>
-      {switch (error) {
-       | Some(error) => <div className=Styles.error> {ReasonReact.string(error)} </div>
-       | None => ReasonReact.null
-       }}
-    </div>,
+[@react.component]
+let make = (~value, ~onChange, ~className="", ~label="", ~type_="", ~error=None) => {
+  <div className=Styles.input>
+    <div className=Styles.inputWrapper>
+      <label className=Styles.label> {React.string(label)} </label>
+      <input value onChange type_ className={className ++ " " ++ Styles.textField} />
+    </div>
+    {switch (error) {
+     | Some(error) => <div className=Styles.error> {React.string(error)} </div>
+     | None => ReasonReact.null
+     }}
+  </div>;
 };

@@ -38,8 +38,6 @@ type action =
   | CreateSession(session)
   | DeleteSession;
 
-let component = ReasonReact.reducerComponent("App");
-
 /*
    I suppose we should prevent any project from being called submit
  */
@@ -71,60 +69,59 @@ let deleteSession = (self, ()) => {
 
 /* Functors are cool. Option.map takes in an optional value, a and a function f, a -> b
    then returns either Some(f(a)) if a is a value or None if a is None
+
+   Basically
+   Option.map :: m a -> (a -> b) -> m b
    */
 let rehydrateSession = () => Option.map(Dom.Storage.(localStorage |> getItem("session")), unsafeJsonParse);
 
 let make = _children => {
-  ...component,
-  initialState: () => {
-    isLoading: false,
-    currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
-    watcherID: ref(None),
-    currentSession: rehydrateSession(),
-  },
-  reducer: (action, state) =>
-    switch (action) {
-    | GoTo(page) => ReasonReact.Update({...state, currentPage: page})
-    | CreateSession(session) => ReasonReact.Update({...state, currentSession: Some(session)})
-    | DeleteSession => ReasonReact.Update({...state, currentSession: None})
-    },
-  didMount: self => {
+  let (state, dispatch) =
+    React.useReducer(
+      (action, state) =>
+        switch (action) {
+        | GoTo(page) => ReasonReact.Update({...state, currentPage: page})
+        | CreateSession(session) => ReasonReact.Update({...state, currentSession: Some(session)})
+        | DeleteSession => ReasonReact.Update({...state, currentSession: None})
+        },
+      {
+        isLoading: false,
+        currentPage: urlToPage(ReasonReact.Router.dangerouslyGetInitialUrl()),
+        watcherID: ref(None),
+        currentSession: rehydrateSession(),
+      },
+    );
+
+  React.useEffect0(() => {
     let watcherID = ReasonReact.Router.watchUrl(url => self.send(GoTo(urlToPage(url))));
-    self.state.watcherID := Some(watcherID);
-    ();
-  },
-  willUnmount: self =>
-    switch (self.state.watcherID^) {
-    | Some(id) => ReasonReact.Router.unwatchUrl(id)
-    | None => ()
-    },
-  render: self =>
-    if (self.state.isLoading) {
-      <div className=Styles.app> <h1> {ReasonReact.string("Loading")} </h1> </div>;
-    } else {
-      <div className=Styles.app>
-        <Header
-          isHome={self.state.currentPage == HomePage}
-          deleteSession={deleteSession(self)}
-          currentSession={self.state.currentSession}
-        />
-        {switch (self.state.currentPage, self.state.currentSession) {
-         | (HomePage, _) => <HomePage />
-         | (ProjectPage(eventSlug, slug), _) => <ProjectPage slug eventSlug />
-         | (SubmitProjectPage(eventSlug), Some(session)) =>
-           <SubmitProjectPage eventSlug createSession={createSession(self)} session={Some(session)} />
-         | (SubmitProjectPage(_), None) =>
-           ReasonReact.Router.push("/login");
-           <LoginPage createSession={createSession(self)} />;
-         | (LoginPage, None) => <LoginPage createSession={createSession(self)} />
-         | (LoginPage, Some(_session))
-         | (RegisterPage, Some(_session)) =>
-           ReasonReact.Router.push("/");
-           <HomePage />;
-         | (RegisterPage, None) => <RegisterPage createSession={createSession(self)} />
-         | (EventPage(slug), _) => <EventPage slug />
-         | (NotFoundPage, _) => <div> {ReasonReact.string("Page not found")} </div>
-         }}
-      </div>;
-    },
+    Some(() => ReasonReact.Router.unwatchUrl(watchID));
+  });
+  if (state.isLoading) {
+    <div className=Styles.app> <h1> "Loading" </h1> </div>;
+  } else {
+    <div className=Styles.app>
+      <Header
+        isHome={self.state.currentPage == HomePage}
+        deleteSession={deleteSession(self)}
+        currentSession={self.state.currentSession}
+      />
+      {switch (self.state.currentPage, self.state.currentSession) {
+       | (HomePage, _) => <HomePage />
+       | (ProjectPage(eventSlug, slug), _) => <ProjectPage slug eventSlug />
+       | (SubmitProjectPage(eventSlug), Some(session)) =>
+         <SubmitProjectPage eventSlug createSession={createSession(self)} session={Some(session)} />
+       | (SubmitProjectPage(_), None) =>
+         ReasonReact.Router.push("/login");
+         <LoginPage createSession={createSession(self)} />;
+       | (LoginPage, None) => <LoginPage createSession={createSession(self)} />
+       | (LoginPage, Some(_session))
+       | (RegisterPage, Some(_session)) =>
+         ReasonReact.Router.push("/");
+         <HomePage />;
+       | (RegisterPage, None) => <RegisterPage createSession={createSession(self)} />
+       | (EventPage(slug), _) => <EventPage slug />
+       | (NotFoundPage, _) => <div> {React.string("Page not found")} </div>
+       }}
+    </div>;
+  };
 };

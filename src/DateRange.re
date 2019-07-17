@@ -5,13 +5,8 @@ module Styles = {
 };
 
 open Utils;
-let component = ReasonReact.statelessComponent("DateRange");
 
-let make = (~startTime, ~endTime, children) => {
-  ...component,
-  render: _self =>
-    <div className=Styles.date>
-      <div> ...children </div>
-      {ReasonReact.string(dateRangeToStr(startTime, endTime))}
-    </div>,
+[@react.component]
+let make = (~startTime, ~endTime, ~children) => {
+  <div className=Styles.date> <div> children </div> {React.string(dateRangeToStr(startTime, endTime))} </div>;
 };

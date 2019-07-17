@@ -4,8 +4,6 @@ type actions =
   | SubmitForm
   | FinishSubmit;
 
-let component = ReasonReact.reducerComponent("ProjectForm");
-
 open Types;
 
 module Register = [%graphql
@@ -42,84 +40,77 @@ module RegisterForm = ReForm.Create(RegisterParams);
 exception GraphQLErrors(array(graphqlError));
 exception EmptyResponse;
 
+[@react.component]
 let make = (~createSession, _children) => {
-  ...component,
-  initialState: () => {isSubmitting: false},
-  reducer: (action, _state) =>
-    switch (action) {
-    | SubmitForm => ReasonReact.Update({isSubmitting: true})
-    | FinishSubmit => ReasonReact.Update({isSubmitting: false})
-    },
-  render: self => {
-    <div>
-      <h1> {ReasonReact.string("Sign Up")} </h1>
-      <RegisterMutation>
-        ...{(mutation, _) =>
-          <RegisterForm
-            onSubmit={({values}) => {
-              Js.log("SUBMITTNG");
-              self.send(SubmitForm);
-              let registerQuery = Register.make(~email=values.email, ~password=values.password, ());
-              mutation(~variables=registerQuery##variables, ())
-              |> Js.Promise.then_(res => {
-                   self.ReasonReact.send(FinishSubmit);
-                   switch (res) {
-                   | Data(data) =>
-                     let user = userFromJs(data##register##user);
-                     let session = {token: data##register##token, user};
-                     createSession(session);
-                     Js.Promise.resolve();
-                   | Errors(errs) =>
-                     Js.log(errs);
-                     Js.Promise.reject(raise(GraphQLErrors(errs)));
-                   | EmptyResponse => Js.Promise.reject(raise(EmptyResponse))
-                   };
-                 })
-              |> Js.Promise.catch(err => Js.Promise.resolve(Js.log(err)))
-              |> ignore;
-              ();
-            }}
-            initialState={email: "", password: "", passwordConfirm: ""}
-            schema=[
-              (`email, Email),
-              (`password, Required),
-              (
-                `passwordConfirm,
-                Custom(
-                  values =>
-                    values.password != values.passwordConfirm ?
-                      Some("Password confirmation must be same as password") : None,
-                ),
+  let (isSubmitting, setIsSubmitting) = React.useState(() => false);
+
+  <div>
+    <h1> {React.string("Sign Up")} </h1>
+    <RegisterMutation>
+      ...{(mutation, _) =>
+        <RegisterForm
+          onSubmit={({values}) => {
+            setIsSubmitting(_ => true);
+            let registerQuery = Register.make(~email=values.email, ~password=values.password, ());
+            mutation(~variables=registerQuery##variables, ())
+            |> Js.Promise.then_(res => {
+                 setIsSubmitting(_ => false);
+                 switch (res) {
+                 | Data(data) =>
+                   let user = userFromJs(data##register##user);
+                   let session = {token: data##register##token, user};
+                   createSession(session);
+                   Js.Promise.resolve();
+                 | Errors(errs) =>
+                   Js.log(errs);
+                   Js.Promise.reject(raise(GraphQLErrors(errs)));
+                 | EmptyResponse => Js.Promise.reject(raise(EmptyResponse))
+                 };
+               })
+            |> Js.Promise.catch(err => Js.Promise.resolve(Js.log(err)))
+            |> ignore;
+            ();
+          }}
+          initialState={email: "", password: "", passwordConfirm: ""}
+          schema=[
+            (`email, Email),
+            (`password, Required),
+            (
+              `passwordConfirm,
+              Custom(
+                values =>
+                  values.password != values.passwordConfirm
+                    ? Some("Password confirmation must be same as password") : None,
               ),
-            ]>
-            ...{({handleSubmit, handleChange, form, getErrorForField}) =>
-              <form onSubmit={ReForm.Helpers.handleDomFormSubmit(handleSubmit)}>
-                <Input
-                  label="Email: "
-                  value={form.values.email}
-                  error={getErrorForField(`email)}
-                  onChange={ReForm.Helpers.handleDomFormChange(handleChange(`email))}
-                />
-                <Input
-                  label="Password: "
-                  value={form.values.password}
-                  error={getErrorForField(`password)}
-                  type_="password"
-                  onChange={ReForm.Helpers.handleDomFormChange(handleChange(`password))}
-                />
-                <Input
-                  label="Password (confirm): "
-                  value={form.values.passwordConfirm}
-                  error={getErrorForField(`passwordConfirm)}
-                  type_="password"
-                  onChange={ReForm.Helpers.handleDomFormChange(handleChange(`passwordConfirm))}
-                />
-                <Button disabled={self.state.isSubmitting} type_="submit"> {"SUBMIT" |> ReasonReact.string} </Button>
-              </form>
-            }
-          </RegisterForm>
-        }
-      </RegisterMutation>
-    </div>;
-  },
+            ),
+          ]>
+          ...{({handleSubmit, handleChange, form, getErrorForField}) =>
+            <form onSubmit={ReForm.Helpers.handleDomFormSubmit(handleSubmit)}>
+              <Input
+                label="Email: "
+                value={form.values.email}
+                error={getErrorForField(`email)}
+                onChange={ReForm.Helpers.handleDomFormChange(handleChange(`email))}
+              />
+              <Input
+                label="Password: "
+                value={form.values.password}
+                error={getErrorForField(`password)}
+                type_="password"
+                onChange={ReForm.Helpers.handleDomFormChange(handleChange(`password))}
+              />
+              <Input
+                label="Password (confirm): "
+                value={form.values.passwordConfirm}
+                error={getErrorForField(`passwordConfirm)}
+                type_="password"
+                onChange={ReForm.Helpers.handleDomFormChange(handleChange(`passwordConfirm))}
+              />
+              <Button disabled=isSubmitting type_="submit"> {"SUBMIT" |> React.string} </Button>
+            </form>
+          }
+        </RegisterForm>
+      }
+    </RegisterMutation>
+  </div>;
 };

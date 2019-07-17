@@ -18,13 +18,11 @@ module Styles = {
     ]);
   };
 };
-let component = ReasonReact.statelessComponent("Button");
 
-let make = (~className="", ~disabled=false, ~type_="button", ~color=Primary, children) => {
-  ...component,
-  render: _self =>
-    switch (color) {
-    | Primary => <button disabled type_ className={className ++ " " ++ Styles.button}> ...children </button>
-    | Secondary => <SecondaryButton disabled type_ className> ...children </SecondaryButton>
-    },
+[@react.component]
+let make = (~className="", ~disabled=false, ~type_="button", ~color=Primary, ~children) => {
+  switch (color) {
+  | Primary => <button disabled type_ className={className ++ " " ++ Styles.button}> children </button>
+  | Secondary => <SecondaryButton disabled type_ className> children </SecondaryButton>
+  };
 };

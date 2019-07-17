@@ -1,5 +1,3 @@
-let component = ReasonReact.statelessComponent("ProjectsGrid");
-
 module Styles = {
   open Css;
   let projectsGrid =
@@ -15,15 +13,10 @@ module Styles = {
 
 open Types;
 
+[@react.component]
 let make = (~projects, ~eventSlug, _children) => {
-  ...component,
-  render: _self =>
-    <div className=Styles.projectsGrid>
-      ...{
-           projects
-           |> Array.map(({id, title, slug}: project) =>
-                <Project key={string_of_int(id)} name=title slug eventSlug />
-              )
-         }
-    </div>,
+  <div className=Styles.projectsGrid>
+    {projects
+     |> Array.map(({id, title, slug}: project) => <Project key={string_of_int(id)} name=title slug eventSlug />)}
+  </div>;
 };
