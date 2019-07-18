@@ -23,10 +23,12 @@
     "reason-apollo",
     "bs-reform",
     "bs-webapi",
-    "bs-axios"
+    "bs-axios",
+    "bs-moment"
   ],
   "ppx-flags": [
-    "graphql_ppx/ppx"
+    "graphql_ppx/ppx",
+    "lenses-ppx/ppx"
   ],
   "refmt": 3
 }

@@ -17,6 +17,7 @@ type page =
   | NotFoundPage
   | SubmitProjectPage(string)
   | RegisterPage
+  | OrganizerPage
   | EventPage(string)
   | LoginPage;
 
@@ -30,7 +31,6 @@ type state = {
   isLoading: bool,
   currentPage: page,
   currentSession: option(session),
-  watcherID: ref(option(ReasonReactRouter.watcherID)),
 };
 
 type action =
@@ -45,6 +45,7 @@ let urlToPage = (url: ReasonReactRouter.url) =>
   switch (url.path) {
   | ["login"] => LoginPage
   | ["register"] => RegisterPage
+  | ["organizers"] => OrganizerPage
   | [eventSlug] => EventPage(eventSlug)
   | [eventSlug, "submit"] => SubmitProjectPage(eventSlug)
   | [eventSlug, slug] => ProjectPage(eventSlug, slug)
@@ -54,7 +55,7 @@ let urlToPage = (url: ReasonReactRouter.url) =>
 
 [@bs.val] external unsafeJsonParse: string => 'a = "JSON.parse";
 
-let createSession = (dispatch, session) => {
+let addSession = (dispatch, session) => {
   dispatch(CreateSession(session));
   switch (Js.Json.stringifyAny(session)) {
   | Some(stringifiedSession) => Dom.Storage.(localStorage |> setItem("session", stringifiedSession))
@@ -88,7 +89,6 @@ let make = () => {
       {
         isLoading: false,
         currentPage: urlToPage(ReasonReactRouter.dangerouslyGetInitialUrl()),
-        watcherID: ref(None),
         currentSession: rehydrateSession(),
       },
     );
@@ -110,17 +110,18 @@ let make = () => {
        | (HomePage, _) => <HomePage />
        | (ProjectPage(eventSlug, slug), _) => <ProjectPage slug eventSlug />
        | (SubmitProjectPage(eventSlug), Some(session)) =>
-         <SubmitProjectPage eventSlug createSession={createSession(dispatch)} session={Some(session)} />
+         <SubmitProjectPage eventSlug addSession={addSession(dispatch)} session={Some(session)} />
        | (SubmitProjectPage(_), None) =>
          ReasonReactRouter.push("/login");
-         <LoginPage createSession={createSession(dispatch)} />;
-       | (LoginPage, None) => <LoginPage createSession={createSession(dispatch)} />
+         <div> {React.string("Redirecting to login...")} </div>;
+       | (LoginPage, None) => <LoginPage addSession={addSession(dispatch)} />
        | (LoginPage, Some(_session))
        | (RegisterPage, Some(_session)) =>
          ReasonReactRouter.push("/");
-         <HomePage />;
-       | (RegisterPage, None) => <RegisterPage createSession={createSession(dispatch)} />
+         <div> {React.string("Redirecting back home")} </div>;
+       | (RegisterPage, None) => <RegisterPage addSession={addSession(dispatch)} />
        | (EventPage(slug), _) => <EventPage slug />
+       | (OrganizerPage, _) => <OrganizerPage />
        | (NotFoundPage, _) => <div> {React.string("Page not found")} </div>
        }}
     </div>;

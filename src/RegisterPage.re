@@ -1,9 +1,5 @@
 type state = {isSubmitting: bool};
 
-type actions =
-  | SubmitForm
-  | FinishSubmit;
-
 open Types;
 
 module Register = [%graphql
@@ -41,7 +37,7 @@ exception GraphQLErrors(array(graphqlError));
 exception EmptyResponse;
 
 [@react.component]
-let make = (~createSession) => {
+let make = (~addSession) => {
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
 
   <div>
@@ -59,7 +55,7 @@ let make = (~createSession) => {
                  | Data(data) =>
                    let user = userFromJs(data##register##user);
                    let session = {token: data##register##token, user};
-                   createSession(session);
+                   addSession(session);
                    Js.Promise.resolve();
                  | Errors(errs) =>
                    Js.log(errs);

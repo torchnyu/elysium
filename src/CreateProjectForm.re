@@ -1,7 +1,3 @@
-type actions =
-  | FinishSubmit
-  | SubmitForm;
-
 module CreateProjectParams = {
   type state = {
     name: string,
