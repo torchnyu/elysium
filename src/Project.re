@@ -18,9 +18,9 @@ module Styles = {
 };
 
 [@react.component]
-let make = (_children, ~name, ~eventSlug, ~slug) => {
+let make = (~name, ~eventSlug, ~slug) => {
   <Link href={"/" ++ eventSlug ++ "/" ++ slug} className=Styles.project>
-    <Icon iconType=ProjectPlaceholder />
+    <Icon iconType=Icon.ProjectPlaceholder />
     <h1 className=Styles.name> {React.string(name)} </h1>
   </Link>;
 };

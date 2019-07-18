@@ -41,7 +41,7 @@ module GetProjectBySlug = [%graphql
 module GetProjectBySlugQuery = ReasonApollo.CreateQuery(GetProjectBySlug);
 
 [@react.component]
-let make = (_children, ~slug, ~eventSlug) => {
+let make = (~slug, ~eventSlug) => {
   let slugQuery = GetProjectBySlug.make(~slug, ~eventSlug, ());
   <GetProjectBySlugQuery variables=slugQuery##variables>
     {({result}) =>

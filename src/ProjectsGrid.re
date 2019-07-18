@@ -14,9 +14,10 @@ module Styles = {
 open Types;
 
 [@react.component]
-let make = (~projects, ~eventSlug, _children) => {
+let make = (~projects, ~eventSlug) => {
   <div className=Styles.projectsGrid>
     {projects
-     |> Array.map(({id, title, slug}: project) => <Project key={string_of_int(id)} name=title slug eventSlug />)}
+     |> Array.map(({id, title, slug}: project) => <Project key={string_of_int(id)} name=title slug eventSlug />)
+     |> React.array}
   </div>;
 };

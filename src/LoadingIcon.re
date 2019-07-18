@@ -13,7 +13,7 @@ module Styles = {
     ]);
 };
 
-[@react.component];
+[@react.component]
 let make = () => {
   <div className=Styles.loadingIcon> <h1> {React.string("Loading")} </h1> </div>;
 };

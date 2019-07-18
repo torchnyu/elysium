@@ -77,7 +77,7 @@ module GetEvents = [%graphql
 module GetEventsQuery = ReasonApollo.CreateQuery(GetEvents);
 
 [@react.component]
-let make = _children => {
+let make = () => {
   <div>
     <div className=Styles.hero>
       <h1 className=Styles.heroText> {React.string("Find hackathons near you")} </h1>

@@ -7,6 +7,6 @@ module Styles = {
 open Utils;
 
 [@react.component]
-let make = (~startTime, ~endTime, ~children) => {
+let make = (~startTime, ~endTime, ~children=React.null) => {
   <div className=Styles.date> <div> children </div> {React.string(dateRangeToStr(startTime, endTime))} </div>;
 };

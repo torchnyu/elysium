@@ -14,7 +14,7 @@ type state = {
 };
 
 [@react.component]
-let make = (~session, ~createSession, ~eventSlug, _children) => {
+let make = (~session, ~createSession, ~eventSlug) => {
   let (state, dispatch) =
     React.useReducer(
       (state, action) =>

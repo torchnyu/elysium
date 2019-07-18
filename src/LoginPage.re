@@ -39,7 +39,7 @@ exception GraphQLErrors(array(graphqlError));
 exception EmptyResponse;
 
 [@react.component]
-let make = (~createSession, _children) => {
+let make = (~createSession) => {
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
 
   <div>

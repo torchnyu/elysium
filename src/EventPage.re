@@ -50,7 +50,7 @@ open Utils;
 module GetEventBySlugQuery = ReasonApollo.CreateQuery(GetEventBySlug);
 
 [@react.component]
-let make = (_children, ~slug) => {
+let make = (~slug) => {
   let slugQuery = GetEventBySlug.make(~slug, ());
   <GetEventBySlugQuery variables=slugQuery##variables>
     ...{({result}) =>
@@ -72,14 +72,16 @@ let make = (_children, ~slug) => {
                 />
               </div>
               <div className=Styles.infoRow>
-                <Icon className=Styles.icon iconType=LocationPin />
+                <Icon className=Styles.icon iconType=Icon.LocationPin />
                 {React.string("Pasadena, California")}
               </div>
               <div className=Styles.infoRow> {React.string("New York University")} </div>
             </div>
             <div className=Styles.buttons>
               <a href={"/" ++ slug ++ "/submit"}> <Button> {React.string("SUBMIT")} </Button> </a>
-              <a href={"/" ++ slug ++ "/submit"}> <Button color=Secondary> {React.string("VISIT SITE")} </Button> </a>
+              <a href={"/" ++ slug ++ "/submit"}>
+                <Button color=Button.Secondary> {React.string("VISIT SITE")} </Button>
+              </a>
             </div>
           </div>
           <p>

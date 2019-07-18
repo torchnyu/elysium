@@ -1,4 +1,4 @@
-[@react.component];
+[@react.component]
 let make = (~className="", ~href, ~children) => {
   let handleClick = event => {
     ReactEvent.Mouse.preventDefault(event);
