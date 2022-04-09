@@ -22,7 +22,7 @@
     "bs-moment": "^0.4.4",
     "bs-reform": "^8.3.2",
     "bs-webapi": "^0.13.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "react": "^16.8.6",
     "react-dates": "^20.2.5",
     "react-dom": "^16.8.6",
